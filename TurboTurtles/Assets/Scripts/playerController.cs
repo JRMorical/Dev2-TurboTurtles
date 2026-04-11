@@ -4,6 +4,7 @@ public class playerController : MonoBehaviour, IDamage
 {
     [SerializeField] CharacterController controller;
     [SerializeField] LayerMask ignoreLayer;
+    [SerializeField] IncreaseRound _increaseRound;
 
     [Range(1, 10)][SerializeField] int HP;
     [Range(3, 7)][SerializeField] int speed;
@@ -18,6 +19,7 @@ public class playerController : MonoBehaviour, IDamage
 
     int jumpCount;
     int HPOrig;
+    int speedOrig;
 
     float shootTimer;
 
@@ -28,6 +30,7 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         HPOrig = HP;
+        speedOrig = speed;
     }
 
     // Update is called once per frame
@@ -62,16 +65,15 @@ public class playerController : MonoBehaviour, IDamage
         }
     }
 
+
     void sprint()
     {
-        if (Input.GetButtonDown("Sprint"))
-        {
-            speed *= sprintMod;
-        }
-        else if (Input.GetButtonUp("Sprint"))
-        {
-            speed /= sprintMod;
-        }
+        if (_increaseRound == null) return;
+
+        if (_increaseRound.IsSprinting)
+            speed = speedOrig * sprintMod;
+        else
+            speed = speedOrig;
     }
 
     void jump()
@@ -85,6 +87,10 @@ public class playerController : MonoBehaviour, IDamage
 
     void shoot()
     {
+        if (_increaseRound != null && !_increaseRound.CanShoot) return;
+
+        if (_increaseRound != null)
+            _increaseRound.UseMagic();
         shootTimer = 0;
 
         RaycastHit hit;
