@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -17,11 +19,22 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
 
+    [SerializeField] Volume postProcessVolume;
+    [SerializeField] float pulseThreshold = 0.40f;
+    [SerializeField] float pulseSpeedMin = 0.8f;
+    [SerializeField] float pulseSpeedMax = 3.5f;
+    [SerializeField] float pulseAmplitude = 0.18f;
+    [SerializeField] float intensityLowHP = 0.65f;
+    [SerializeField] float lerpSpeed = 4f;
+
     int jumpCount;
     int HPOrig;
     int speedOrig;
 
     float shootTimer;
+    float _vignetteIntensity;
+
+    Vignette _vignette;
 
     Vector3 moveDir;    //WASD
     Vector3 playerVel;  //Player Velocity
@@ -31,6 +44,9 @@ public class playerController : MonoBehaviour, IDamage
     {
         HPOrig = HP;
         speedOrig = speed;
+
+        if (postProcessVolume != null)
+            postProcessVolume.profile.TryGet(out _vignette);
     }
 
     // Update is called once per frame
@@ -38,6 +54,41 @@ public class playerController : MonoBehaviour, IDamage
     {
         movement();
         sprint();
+        updateVignette();
+    }
+
+    void updateVignette()
+    {
+        if (_vignette == null)
+        {
+            if (postProcessVolume == null) return;
+            if (!postProcessVolume.profile.TryGet(out _vignette)) return;
+        }
+
+        float healthPct = Mathf.Clamp01((float)HP / HPOrig);
+
+        
+        float baseIntensity = Mathf.Lerp(intensityLowHP, 0f, healthPct);
+        float target = baseIntensity;
+
+        
+        if (healthPct <= pulseThreshold)
+        {
+            float danger = 1f - (healthPct / pulseThreshold); 
+            float pulseSpeed = Mathf.Lerp(pulseSpeedMin, pulseSpeedMax, danger);
+            float pulse = Mathf.Sin(Time.time * pulseSpeed * Mathf.PI * 2f);
+            target += pulse * pulseAmplitude * danger;
+
+            
+            _vignette.color.Override(Color.Lerp(Color.black, new Color(0.55f, 0f, 0f), danger));
+        }
+        else
+        {
+            _vignette.color.Override(Color.black);
+        }
+
+        _vignetteIntensity = Mathf.Lerp(_vignetteIntensity, target, Time.deltaTime * lerpSpeed);
+        _vignette.intensity.Override(Mathf.Clamp(_vignetteIntensity, 0f, 1f));
     }
 
     void movement()
