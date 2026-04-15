@@ -119,4 +119,11 @@ public class gamemanager : MonoBehaviour
             collectibleText.text = "Collectibles: " + collectiblesCurrent + " / " + collectiblesNeeded;
         }
     }
+
+    public void youWin()
+    {
+        statePause();
+        menuActive = menuWin;
+        menuActive.SetActive(true);
+    }
 }
