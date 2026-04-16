@@ -15,9 +15,10 @@ public class playerController : MonoBehaviour, IDamage
     [Range(1, 3)][SerializeField] int jumpMax;
     [Range(15, 50)][SerializeField] int gravity;
 
-    [SerializeField] int shootDamage;
+    public int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
+    public float damageReductionMultiplier = 1f;
 
     [SerializeField] Volume postProcessVolume;
     [SerializeField] float pulseThreshold = 0.40f;
@@ -159,6 +160,7 @@ public class playerController : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
+        amount = Mathf.RoundToInt(amount * damageReductionMultiplier);
         HP -= amount;
 
         if (HP <= 0)
