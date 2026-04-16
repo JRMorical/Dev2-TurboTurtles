@@ -15,6 +15,8 @@ public class gamemanager : MonoBehaviour
     [SerializeField] TMP_Text collectibleText;
     [SerializeField] TMP_Text scoreText;
 
+    [SerializeField] GameObject menuSkillTree;
+
     public Image playerHPBar;
     public GameObject PlayerDamageFlashScreen;
     public bool isPaused;
@@ -59,6 +61,20 @@ public class gamemanager : MonoBehaviour
                 menuActive.SetActive(true);
             }
             else if (menuActive == menuPause)
+            {
+                stateUnpause();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (menuActive == null)
+            {
+                statePause();
+                menuActive = menuSkillTree;
+                menuActive.SetActive(true);
+            }
+            else if (menuActive == menuSkillTree)
             {
                 stateUnpause();
             }
