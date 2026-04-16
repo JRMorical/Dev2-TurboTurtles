@@ -12,6 +12,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject menuWin;
 
     [SerializeField] TMP_Text collectibleText;
+    [SerializeField] TMP_Text scoreText;
 
     public bool isPaused;
     public GameObject player;
@@ -23,6 +24,9 @@ public class gamemanager : MonoBehaviour
 
     int collectiblesCurrent;
     int collectiblesNeeded;
+
+    int score;
+    int pointsPerKill = 100;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -37,6 +41,7 @@ public class gamemanager : MonoBehaviour
     private void Start()
     {
         updateCollectibleUI();
+        updateScoreUI();
     }
 
     // Update is called once per frame
@@ -117,6 +122,20 @@ public class gamemanager : MonoBehaviour
         if (collectibleText != null)
         {
             collectibleText.text = "Collectibles: " + collectiblesCurrent + " / " + collectiblesNeeded;
+        }
+    }
+
+    public void AddScore()
+    {
+        score += pointsPerKill;
+        updateScoreUI();
+    }
+
+    void updateScoreUI()
+    {
+        if(scoreText != null)
+        {
+            scoreText.text = "Score " + score;
         }
     }
 }
