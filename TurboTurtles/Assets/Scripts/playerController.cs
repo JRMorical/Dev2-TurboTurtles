@@ -9,11 +9,12 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] IncreaseRound _increaseRound;
 
-    [Range(1, 10)][SerializeField] int HP;
-    [Range(3, 7)][SerializeField] int speed;
+    public int HP;
+    public int speed;
+    public int jumpMax;
+
     [Range(2, 5)][SerializeField] int sprintMod;
     [Range(5, 25)][SerializeField] int jumpSpeed;
-    [Range(1, 3)][SerializeField] int jumpMax;
     [Range(15, 50)][SerializeField] int gravity;
 
     public int shootDamage;
@@ -33,18 +34,17 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] float lerpSpeed = 4f;
 
     int jumpCount;
-    int HPOrig;
-    int speedOrig;
+    public int HPOrig;
+    public int speedOrig;
 
     float shootTimer;
     float _vignetteIntensity;
 
     Vignette _vignette;
 
-    Vector3 moveDir;    //WASD
-    Vector3 playerVel;  //Player Velocity
+    Vector3 moveDir;
+    Vector3 playerVel;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         HPOrig = HP;
@@ -55,7 +55,6 @@ public class playerController : MonoBehaviour, IDamage
             postProcessVolume.profile.TryGet(out _vignette);
     }
 
-    // Update is called once per frame
     void Update()
     {
         movement();
@@ -73,19 +72,16 @@ public class playerController : MonoBehaviour, IDamage
 
         float healthPct = Mathf.Clamp01((float)HP / HPOrig);
 
-        
         float baseIntensity = Mathf.Lerp(intensityLowHP, 0f, healthPct);
         float target = baseIntensity;
 
-        
         if (healthPct <= pulseThreshold)
         {
-            float danger = 1f - (healthPct / pulseThreshold); 
+            float danger = 1f - (healthPct / pulseThreshold);
             float pulseSpeed = Mathf.Lerp(pulseSpeedMin, pulseSpeedMax, danger);
             float pulse = Mathf.Sin(Time.time * pulseSpeed * Mathf.PI * 2f);
             target += pulse * pulseAmplitude * danger;
 
-            
             _vignette.color.Override(Color.Lerp(Color.black, new Color(0.55f, 0f, 0f), danger));
         }
         else
@@ -108,9 +104,9 @@ public class playerController : MonoBehaviour, IDamage
             jumpCount = 0;
             playerVel.y = 0;
         }
-        //moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")); //This is world based movement. This works for Top-Down movement but not for any other type of movement.
+
         moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-        controller.Move(moveDir * speed * Time.deltaTime); //Time.deltaTime helps keep pace between bad computers and good computers.
+        controller.Move(moveDir * speed * Time.deltaTime);
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
@@ -121,7 +117,6 @@ public class playerController : MonoBehaviour, IDamage
             shoot();
         }
     }
-
 
     void sprint()
     {
@@ -149,7 +144,6 @@ public class playerController : MonoBehaviour, IDamage
 
         shootTimer = 0;
 
-       
         RaycastHit hit;
         Vector3 targetPoint;
 
@@ -158,7 +152,6 @@ public class playerController : MonoBehaviour, IDamage
         else
             targetPoint = Camera.main.transform.position + Camera.main.transform.forward * shootDist;
 
-        
         if (fireballPrefab != null && firePoint != null)
         {
             GameObject fb = Instantiate(fireballPrefab, firePoint.position, Camera.main.transform.rotation);
@@ -175,9 +168,18 @@ public class playerController : MonoBehaviour, IDamage
 
         if (HP <= 0)
         {
-            //Hey! I know this sucks but I am Dead...
             gamemanager.instance.youLose();
         }
+    }
+
+    public void Heal(int amount)
+    {
+        HP += amount;
+
+        if (HP > HPOrig)
+            HP = HPOrig;
+
+        updatePlayerUI();
     }
 
     public void updatePlayerUI()

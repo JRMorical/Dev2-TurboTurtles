@@ -42,6 +42,8 @@ public class EnemyMelee : MonoBehaviour
         if (dmg != null)
         {
             dmg.takeDamage(damage);
+
+            gamemanager.instance.OnSuccessfulHit?.Invoke(brain.Target.gameObject, gameObject);
         }
 
         yield return new WaitForSeconds(attackCooldown);

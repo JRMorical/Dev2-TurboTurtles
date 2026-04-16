@@ -46,6 +46,9 @@ public class EnemyHealth : MonoBehaviour, IDamage
             spawner.NotifyEnemyDied();
         }
 
+        gamemanager.instance.exp++;
+        gamemanager.instance.AddScore();
+
         Destroy(gameObject);
     }
 
@@ -59,5 +62,13 @@ public class EnemyHealth : MonoBehaviour, IDamage
     public void SetSpawner(EnemyRoundSpawner roundSpawner)
     {
         spawner = roundSpawner;
+    }
+
+    public void Heal(int amount)
+    {
+        currentHP += amount;
+
+        if (currentHP > maxHP)
+            currentHP = maxHP;
     }
 }
