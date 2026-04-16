@@ -63,4 +63,12 @@ public class EnemyHealth : MonoBehaviour, IDamage
     {
         spawner = roundSpawner;
     }
+
+    public void Heal(int amount)
+    {
+        currentHP += amount;
+
+        if (currentHP > maxHP)
+            currentHP = maxHP;
+    }
 }

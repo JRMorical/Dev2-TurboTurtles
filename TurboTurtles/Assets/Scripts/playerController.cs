@@ -71,19 +71,19 @@ public class playerController : MonoBehaviour, IDamage
 
         float healthPct = Mathf.Clamp01((float)HP / HPOrig);
 
-        
+
         float baseIntensity = Mathf.Lerp(intensityLowHP, 0f, healthPct);
         float target = baseIntensity;
 
-        
+
         if (healthPct <= pulseThreshold)
         {
-            float danger = 1f - (healthPct / pulseThreshold); 
+            float danger = 1f - (healthPct / pulseThreshold);
             float pulseSpeed = Mathf.Lerp(pulseSpeedMin, pulseSpeedMax, danger);
             float pulse = Mathf.Sin(Time.time * pulseSpeed * Mathf.PI * 2f);
             target += pulse * pulseAmplitude * danger;
 
-            
+
             _vignette.color.Override(Color.Lerp(Color.black, new Color(0.55f, 0f, 0f), danger));
         }
         else
@@ -147,7 +147,7 @@ public class playerController : MonoBehaviour, IDamage
 
         shootTimer = 0;
 
-       
+
         RaycastHit hit;
         Vector3 targetPoint;
 
@@ -156,7 +156,7 @@ public class playerController : MonoBehaviour, IDamage
         else
             targetPoint = Camera.main.transform.position + Camera.main.transform.forward * shootDist;
 
-        
+
         if (fireballPrefab != null && firePoint != null)
         {
             GameObject fb = Instantiate(fireballPrefab, firePoint.position, Camera.main.transform.rotation);
@@ -173,5 +173,13 @@ public class playerController : MonoBehaviour, IDamage
             //Hey! I know this sucks but I am Dead...
             gamemanager.instance.youLose();
         }
+    }
+
+    public void Heal(int amount)
+    {
+        HP += amount;
+
+        if (HP > HPOrig)
+            HP = HPOrig;
     }
 }

@@ -35,6 +35,8 @@ public class damage : MonoBehaviour
         if (dmg != null && type != damageType.DOT)
         {
             dmg.takeDamage(damageAmount);
+
+            gamemanager.instance.OnSuccessfulHit?.Invoke(other.gameObject, gameObject);
         }
 
         if (type == damageType.bullet)

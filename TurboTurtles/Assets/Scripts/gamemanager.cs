@@ -30,6 +30,8 @@ public class gamemanager : MonoBehaviour
     public GameObject player;
     public playerController playerScript;
 
+    public System.Action<GameObject, GameObject> OnSuccessfulHit;
+
     float timeScaleOrig;
 
     int gameGoalCount;

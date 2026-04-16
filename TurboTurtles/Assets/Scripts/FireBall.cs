@@ -34,6 +34,8 @@ public class Fireball : MonoBehaviour
         if (dmg != null)
         {
             dmg.takeDamage(damage);
+
+            gamemanager.instance.OnSuccessfulHit?.Invoke(col.gameObject, gameObject);
         }
 
 
