@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -15,9 +16,13 @@ public class playerController : MonoBehaviour, IDamage
     [Range(1, 3)][SerializeField] int jumpMax;
     [Range(15, 50)][SerializeField] int gravity;
 
-    [SerializeField] int shootDamage;
+    public int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
+    public float damageReductionMultiplier = 1f;
+
+    [SerializeField] GameObject fireballPrefab;
+    [SerializeField] Transform firePoint;
 
     [SerializeField] Volume postProcessVolume;
     [SerializeField] float pulseThreshold = 0.40f;
@@ -43,6 +48,7 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         HPOrig = HP;
+        updatePlayerUI();
         speedOrig = speed;
 
         if (postProcessVolume != null)
@@ -139,32 +145,50 @@ public class playerController : MonoBehaviour, IDamage
     void shoot()
     {
         if (_increaseRound != null && !_increaseRound.CanShoot) return;
+        if (_increaseRound != null) _increaseRound.UseMagic();
 
-        if (_increaseRound != null)
-            _increaseRound.UseMagic();
         shootTimer = 0;
 
+       
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
-        {
-            Debug.Log(hit.collider.name);
+        Vector3 targetPoint;
 
-            IDamage dmg = hit.collider.GetComponent<IDamage>();
-            if (dmg != null)
-            {
-                dmg.takeDamage(shootDamage);
-            }
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
+            targetPoint = hit.point;
+        else
+            targetPoint = Camera.main.transform.position + Camera.main.transform.forward * shootDist;
+
+        
+        if (fireballPrefab != null && firePoint != null)
+        {
+            GameObject fb = Instantiate(fireballPrefab, firePoint.position, Camera.main.transform.rotation);
+            fb.GetComponent<Fireball>().targetPoint = targetPoint;
         }
     }
 
     public void takeDamage(int amount)
     {
+        amount = Mathf.RoundToInt(amount * damageReductionMultiplier);
         HP -= amount;
+        updatePlayerUI();
+        StartCoroutine(flashDamage());
 
         if (HP <= 0)
         {
             //Hey! I know this sucks but I am Dead...
             gamemanager.instance.youLose();
         }
+    }
+
+    public void updatePlayerUI()
+    {
+        gamemanager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
+    }
+
+    IEnumerator flashDamage()
+    {
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(false);
     }
 }

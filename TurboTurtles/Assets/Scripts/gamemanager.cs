@@ -10,9 +10,15 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuWin;
+    [SerializeField] TMP_Text gameGoalCountText;
 
     [SerializeField] TMP_Text collectibleText;
+    [SerializeField] TMP_Text scoreText;
 
+    [SerializeField] GameObject menuSkillTree;
+
+    public Image playerHPBar;
+    public GameObject PlayerDamageFlashScreen;
     public bool isPaused;
     public GameObject player;
     public playerController playerScript;
@@ -23,6 +29,9 @@ public class gamemanager : MonoBehaviour
 
     int collectiblesCurrent;
     int collectiblesNeeded;
+
+    int score;
+    int pointsPerKill = 100;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -37,6 +46,7 @@ public class gamemanager : MonoBehaviour
     private void Start()
     {
         updateCollectibleUI();
+        updateScoreUI();
     }
 
     // Update is called once per frame
@@ -51,6 +61,20 @@ public class gamemanager : MonoBehaviour
                 menuActive.SetActive(true);
             }
             else if (menuActive == menuPause)
+            {
+                stateUnpause();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (menuActive == null)
+            {
+                statePause();
+                menuActive = menuSkillTree;
+                menuActive.SetActive(true);
+            }
+            else if (menuActive == menuSkillTree)
             {
                 stateUnpause();
             }
@@ -85,6 +109,7 @@ public class gamemanager : MonoBehaviour
     public void updateGameGoal(int amount)
     {
         gameGoalCount += amount;
+        gameGoalCountText.text = gameGoalCount.ToString("F0");
 
         if (gameGoalCount <= 0)
         {
@@ -117,6 +142,27 @@ public class gamemanager : MonoBehaviour
         if (collectibleText != null)
         {
             collectibleText.text = "Collectibles: " + collectiblesCurrent + " / " + collectiblesNeeded;
+        }
+    }
+
+    public void youWin()
+    {
+        statePause();
+        menuActive = menuWin;
+        menuActive.SetActive(true);
+    }
+
+    public void AddScore()
+    {
+        score += pointsPerKill;
+        updateScoreUI();
+    }
+
+    void updateScoreUI()
+    {
+        if(scoreText != null)
+        {
+            scoreText.text = "Score " + score;
         }
     }
 }

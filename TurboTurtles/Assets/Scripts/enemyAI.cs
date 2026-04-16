@@ -246,6 +246,7 @@ public class enemyAI : MonoBehaviour, IDamage
             if (spawner != null)
                 spawner.currentSpawned--;
             gamemanager.instance.updateGameGoal(-1);
+            gamemanager.instance.AddScore();
             Destroy(gameObject);
         }
         else
