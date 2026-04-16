@@ -20,6 +20,9 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] float shootRate;
     public float damageReductionMultiplier = 1f;
 
+    [SerializeField] GameObject fireballPrefab;
+    [SerializeField] Transform firePoint;
+
     [SerializeField] Volume postProcessVolume;
     [SerializeField] float pulseThreshold = 0.40f;
     [SerializeField] float pulseSpeedMin = 0.8f;
@@ -140,21 +143,24 @@ public class playerController : MonoBehaviour, IDamage
     void shoot()
     {
         if (_increaseRound != null && !_increaseRound.CanShoot) return;
+        if (_increaseRound != null) _increaseRound.UseMagic();
 
-        if (_increaseRound != null)
-            _increaseRound.UseMagic();
         shootTimer = 0;
 
+       
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
-        {
-            Debug.Log(hit.collider.name);
+        Vector3 targetPoint;
 
-            IDamage dmg = hit.collider.GetComponent<IDamage>();
-            if (dmg != null)
-            {
-                dmg.takeDamage(shootDamage);
-            }
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
+            targetPoint = hit.point;
+        else
+            targetPoint = Camera.main.transform.position + Camera.main.transform.forward * shootDist;
+
+        
+        if (fireballPrefab != null && firePoint != null)
+        {
+            GameObject fb = Instantiate(fireballPrefab, firePoint.position, Camera.main.transform.rotation);
+            fb.GetComponent<Fireball>().targetPoint = targetPoint;
         }
     }
 
