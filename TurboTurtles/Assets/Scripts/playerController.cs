@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -47,6 +48,7 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         HPOrig = HP;
+        updatePlayerUI();
         speedOrig = speed;
 
         if (postProcessVolume != null)
@@ -168,11 +170,25 @@ public class playerController : MonoBehaviour, IDamage
     {
         amount = Mathf.RoundToInt(amount * damageReductionMultiplier);
         HP -= amount;
+        updatePlayerUI();
+        StartCoroutine(flashDamage());
 
         if (HP <= 0)
         {
             //Hey! I know this sucks but I am Dead...
             gamemanager.instance.youLose();
         }
+    }
+
+    public void updatePlayerUI()
+    {
+        gamemanager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
+    }
+
+    IEnumerator flashDamage()
+    {
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(false);
     }
 }
