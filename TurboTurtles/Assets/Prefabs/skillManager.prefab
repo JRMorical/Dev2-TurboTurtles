@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &456343468790353498
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8165558010026896500}
+  - component: {fileID: 7496531805541431280}
+  - component: {fileID: 721893989399244794}
+  - component: {fileID: 1420657898047753253}
+  m_Layer: 0
+  m_Name: skillManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8165558010026896500
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456343468790353498}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 832.24097, y: 265.77048, z: 666.90875}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7496531805541431280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456343468790353498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d10adebfaff59dc46bf9d36181e8c78b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillManager
+  damageBoost: {fileID: 721893989399244794}
+  damageReduction: {fileID: 1420657898047753253}
+--- !u!114 &721893989399244794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456343468790353498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0a67df47012b354481b66125d7517b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageBoostSkill
+  duration: 15
+  cooldown: 30
+  player: {fileID: 2081020567211513948, guid: cc57e94415f3c574190c76f87e45b355, type: 3}
+  boostAmount: 10
+--- !u!114 &1420657898047753253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456343468790353498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfffff06ffd1caa48b63c3e324655e46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageReductionSkill
+  duration: 15
+  cooldown: 30
+  player: {fileID: 2081020567211513948, guid: cc57e94415f3c574190c76f87e45b355, type: 3}
+  reductionMultiplier: 0.5
