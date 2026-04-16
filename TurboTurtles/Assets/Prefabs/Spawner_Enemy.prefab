@@ -53,9 +53,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: meleeRange
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: meleePrefab
       value: 
       objectReference: {fileID: 8697784469292559806, guid: 85fd8759aa39a1d40baa5c1448fe8197, type: 3}
+    - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: rangedRange
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: rangedPrefab
       value: 
@@ -127,6 +135,8 @@ PrefabInstance:
     - {fileID: 7420993068420027570, guid: cae03782b8988d141962f09292198154, type: 3}
     - {fileID: 3752545434597806842, guid: cae03782b8988d141962f09292198154, type: 3}
     - {fileID: 3523551202141771396, guid: cae03782b8988d141962f09292198154, type: 3}
+    - {fileID: 6289347496269691909, guid: cae03782b8988d141962f09292198154, type: 3}
+    - {fileID: 1048413007357402677, guid: cae03782b8988d141962f09292198154, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cae03782b8988d141962f09292198154, type: 3}

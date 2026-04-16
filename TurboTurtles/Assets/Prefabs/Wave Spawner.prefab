@@ -54,6 +54,7 @@ MonoBehaviour:
   timeBetweenWaves: 5
   startDelay: 3
   startOnPlay: 1
+  maxWaves: 1
   waveText: {fileID: 0}
   enemiesLeftText: {fileID: 0}
   nextWaveText: {fileID: 0}

@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Ranged
       objectReference: {fileID: 0}
+    - target: {fileID: 1048413007357402677, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: m_Name
+      value: ArmPivot
+      objectReference: {fileID: 0}
     - target: {fileID: 1250534180459950728, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_LocalScale.y
       value: 2.6989396
@@ -64,6 +68,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 11.427
       objectReference: {fileID: 0}
+    - target: {fileID: 1993574517095775742, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.521
+      objectReference: {fileID: 0}
+    - target: {fileID: 1993574517095775742, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1993574517095775742, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.058
+      objectReference: {fileID: 0}
     - target: {fileID: 2231934648368799502, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_StoppingDistance
       value: 4
@@ -103,7 +119,7 @@ PrefabInstance:
     - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: shootPos
       value: 
-      objectReference: {fileID: 6470959595662007612}
+      objectReference: {fileID: 7724137360762686588}
     - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: shootRate
       value: 0.6
@@ -197,9 +213,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b9c046ed3ebf9641a2a8c86bff3f96b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemyAI
---- !u!4 &6470959595662007612 stripped
+--- !u!4 &7724137360762686588 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 2978647381995695294, guid: cae03782b8988d141962f09292198154, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1993574517095775742, guid: cae03782b8988d141962f09292198154, type: 3}
   m_PrefabInstance: {fileID: 8114148923709780354}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8752032220630977854 stripped
