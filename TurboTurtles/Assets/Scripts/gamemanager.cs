@@ -125,6 +125,13 @@ public class gamemanager : MonoBehaviour
         }
     }
 
+    public void youWin()
+    {
+        statePause();
+        menuActive = menuWin;
+        menuActive.SetActive(true);
+    }
+
     public void AddScore()
     {
         score += pointsPerKill;
