@@ -150,6 +150,7 @@ public class enemyAI : MonoBehaviour, IDamage
         if (HP <= 0)
         {
             gamemanager.instance.updateGameGoal(-1);
+            gamemanager.instance.AddScore();
             Destroy(gameObject);
         }
         else
