@@ -4,6 +4,7 @@ public class enemyAnimator : MonoBehaviour
 {
     Animator animator;
     const string ATTACK = "Attack";
+    const string PROJECTILE = "Projectile";
     [SerializeField] enemyAI enemy;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,8 +17,8 @@ public class enemyAnimator : MonoBehaviour
     {
         animator.SetTrigger(ATTACK);
     }
-    public void ResetAttack()
+    public void PlayProjectile()
     {
-        animator.ResetTrigger(ATTACK);
+        animator.SetTrigger(PROJECTILE);
     }
 }

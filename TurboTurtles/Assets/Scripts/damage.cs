@@ -28,7 +28,7 @@ public class damage : MonoBehaviour
     // Update is called once per frame
     private void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger)
+        if (other.isTrigger || other.CompareTag("Ranged") || other.CompareTag("Melee") || other.CompareTag("Spawner"))
             return;
 
         IDamage dmg = other.GetComponent<IDamage>();

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -16,9 +17,10 @@ public class playerController : MonoBehaviour, IDamage
     [Range(5, 25)][SerializeField] int jumpSpeed;
     [Range(15, 50)][SerializeField] int gravity;
 
-    [SerializeField] int shootDamage;
+    public int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
+    public float damageReductionMultiplier = 1f;
 
     [SerializeField] GameObject fireballPrefab;
     [SerializeField] Transform firePoint;
@@ -40,20 +42,19 @@ public class playerController : MonoBehaviour, IDamage
 
     Vignette _vignette;
 
-    Vector3 moveDir;    //WASD
-    Vector3 playerVel;  //Player Velocity
+    Vector3 moveDir;
+    Vector3 playerVel;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         HPOrig = HP;
+        updatePlayerUI();
         speedOrig = speed;
 
         if (postProcessVolume != null)
             postProcessVolume.profile.TryGet(out _vignette);
     }
 
-    // Update is called once per frame
     void Update()
     {
         movement();
@@ -71,10 +72,8 @@ public class playerController : MonoBehaviour, IDamage
 
         float healthPct = Mathf.Clamp01((float)HP / HPOrig);
 
-
         float baseIntensity = Mathf.Lerp(intensityLowHP, 0f, healthPct);
         float target = baseIntensity;
-
 
         if (healthPct <= pulseThreshold)
         {
@@ -82,7 +81,6 @@ public class playerController : MonoBehaviour, IDamage
             float pulseSpeed = Mathf.Lerp(pulseSpeedMin, pulseSpeedMax, danger);
             float pulse = Mathf.Sin(Time.time * pulseSpeed * Mathf.PI * 2f);
             target += pulse * pulseAmplitude * danger;
-
 
             _vignette.color.Override(Color.Lerp(Color.black, new Color(0.55f, 0f, 0f), danger));
         }
@@ -106,9 +104,9 @@ public class playerController : MonoBehaviour, IDamage
             jumpCount = 0;
             playerVel.y = 0;
         }
-        //moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")); //This is world based movement. This works for Top-Down movement but not for any other type of movement.
+
         moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-        controller.Move(moveDir * speed * Time.deltaTime); //Time.deltaTime helps keep pace between bad computers and good computers.
+        controller.Move(moveDir * speed * Time.deltaTime);
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
@@ -119,7 +117,6 @@ public class playerController : MonoBehaviour, IDamage
             shoot();
         }
     }
-
 
     void sprint()
     {
@@ -147,7 +144,6 @@ public class playerController : MonoBehaviour, IDamage
 
         shootTimer = 0;
 
-
         RaycastHit hit;
         Vector3 targetPoint;
 
@@ -155,7 +151,6 @@ public class playerController : MonoBehaviour, IDamage
             targetPoint = hit.point;
         else
             targetPoint = Camera.main.transform.position + Camera.main.transform.forward * shootDist;
-
 
         if (fireballPrefab != null && firePoint != null)
         {
@@ -166,11 +161,13 @@ public class playerController : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
+        amount = Mathf.RoundToInt(amount * damageReductionMultiplier);
         HP -= amount;
+        updatePlayerUI();
+        StartCoroutine(flashDamage());
 
         if (HP <= 0)
         {
-            //Hey! I know this sucks but I am Dead...
             gamemanager.instance.youLose();
         }
     }
@@ -181,5 +178,19 @@ public class playerController : MonoBehaviour, IDamage
 
         if (HP > HPOrig)
             HP = HPOrig;
+
+        updatePlayerUI();
+    }
+
+    public void updatePlayerUI()
+    {
+        gamemanager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
+    }
+
+    IEnumerator flashDamage()
+    {
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(false);
     }
 }

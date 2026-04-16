@@ -10,6 +10,7 @@ public class gamemanager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuWin;
+    [SerializeField] TMP_Text gameGoalCountText;
 
     [SerializeField] TMP_Text collectibleText;
     [SerializeField] TMP_Text scoreText;
@@ -18,6 +19,10 @@ public class gamemanager : MonoBehaviour
     [SerializeField] TMP_Text pointsText;
 
     [SerializeField] GameObject menuUpgrades;
+    [SerializeField] GameObject menuSkillTree;
+
+    public Image playerHPBar;
+    public GameObject PlayerDamageFlashScreen;
 
     [SerializeField] int maxLevel = 20;
     [SerializeField] double nextLevel = 5;
@@ -42,7 +47,6 @@ public class gamemanager : MonoBehaviour
     int score;
     int pointsPerKill = 100;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         instance = this;
@@ -58,7 +62,6 @@ public class gamemanager : MonoBehaviour
         updateScoreUI();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetButtonDown("Cancel"))
@@ -69,30 +72,37 @@ public class gamemanager : MonoBehaviour
                 menuActive = menuPause;
                 menuActive.SetActive(true);
             }
-            else if (menuActive == menuPause)
+            else if (menuActive == menuPause || menuActive == menuUpgrades || menuActive == menuSkillTree)
             {
                 stateUnpause();
             }
         }
 
-        // Level UI
         if (levelText != null)
             levelText.text = "Level: " + level + "/" + maxLevel;
 
         if (pointsText != null)
             pointsText.text = "Points: " + points;
 
-        // Open upgrade menu
         if (Input.GetKeyDown(KeyCode.U) && menuActive == null)
         {
             openUpgradeMenu();
         }
-        else if (menuActive == menuUpgrades && Input.GetButtonDown("Cancel"))
+
+        if (Input.GetKeyDown(KeyCode.I))
         {
-            stateUnpause();
+            if (menuActive == null)
+            {
+                statePause();
+                menuActive = menuSkillTree;
+                menuActive.SetActive(true);
+            }
+            else if (menuActive == menuSkillTree)
+            {
+                stateUnpause();
+            }
         }
 
-        // Level logic
         if (exp >= nextLevel && level < maxLevel)
         {
             level++;
@@ -119,8 +129,12 @@ public class gamemanager : MonoBehaviour
         Time.timeScale = timeScaleOrig;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        menuActive.SetActive(false);
-        menuActive = null;
+
+        if (menuActive != null)
+        {
+            menuActive.SetActive(false);
+            menuActive = null;
+        }
     }
 
     public void youLose()
@@ -133,10 +147,10 @@ public class gamemanager : MonoBehaviour
     public void updateGameGoal(int amount)
     {
         gameGoalCount += amount;
+        gameGoalCountText.text = gameGoalCount.ToString("F0");
 
         if (gameGoalCount <= 0)
         {
-            // You Win!!!
             statePause();
             menuActive = menuWin;
             menuActive.SetActive(true);
