@@ -8,11 +8,12 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] LayerMask ignoreLayer;
     [SerializeField] IncreaseRound _increaseRound;
 
-    [Range(1, 10)][SerializeField] int HP;
-    [Range(3, 7)][SerializeField] int speed;
+    public int HP;
+    public int speed;
+    public int jumpMax;
+
     [Range(2, 5)][SerializeField] int sprintMod;
     [Range(5, 25)][SerializeField] int jumpSpeed;
-    [Range(1, 3)][SerializeField] int jumpMax;
     [Range(15, 50)][SerializeField] int gravity;
 
     [SerializeField] int shootDamage;
@@ -31,8 +32,8 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] float lerpSpeed = 4f;
 
     int jumpCount;
-    int HPOrig;
-    int speedOrig;
+    public int HPOrig;
+    public int speedOrig;
 
     float shootTimer;
     float _vignetteIntensity;

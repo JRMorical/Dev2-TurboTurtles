@@ -151,6 +151,7 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             gamemanager.instance.updateGameGoal(-1);
             gamemanager.instance.AddScore();
+            gamemanager.instance.exp++;
             Destroy(gameObject);
         }
         else

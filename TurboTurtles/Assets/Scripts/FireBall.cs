@@ -29,12 +29,14 @@ public class Fireball : MonoBehaviour
         if (trailEffect != null)
             trailEffect.Stop();
 
-       
+
         IDamage dmg = col.collider.GetComponent<IDamage>();
         if (dmg != null)
+        {
             dmg.takeDamage(damage);
+        }
 
-        
+
         if (explosionEffect != null)
         {
             explosionEffect.transform.SetParent(null);

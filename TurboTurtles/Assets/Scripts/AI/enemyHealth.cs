@@ -46,6 +46,9 @@ public class EnemyHealth : MonoBehaviour, IDamage
             spawner.NotifyEnemyDied();
         }
 
+        gamemanager.instance.exp++;
+        gamemanager.instance.AddScore();
+
         Destroy(gameObject);
     }
 
