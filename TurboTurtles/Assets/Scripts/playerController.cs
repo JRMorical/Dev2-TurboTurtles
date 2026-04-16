@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -15,9 +16,10 @@ public class playerController : MonoBehaviour, IDamage
     [Range(1, 3)][SerializeField] int jumpMax;
     [Range(15, 50)][SerializeField] int gravity;
 
-    [SerializeField] int shootDamage;
+    public int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
+    public float damageReductionMultiplier = 1f;
 
     [SerializeField] GameObject fireballPrefab;
     [SerializeField] Transform firePoint;
@@ -46,6 +48,7 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         HPOrig = HP;
+        updatePlayerUI();
         speedOrig = speed;
 
         if (postProcessVolume != null)
@@ -165,12 +168,27 @@ public class playerController : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
+        amount = Mathf.RoundToInt(amount * damageReductionMultiplier);
         HP -= amount;
+        updatePlayerUI();
+        StartCoroutine(flashDamage());
 
         if (HP <= 0)
         {
             //Hey! I know this sucks but I am Dead...
             gamemanager.instance.youLose();
         }
+    }
+
+    public void updatePlayerUI()
+    {
+        gamemanager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
+    }
+
+    IEnumerator flashDamage()
+    {
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        gamemanager.instance.PlayerDamageFlashScreen.SetActive(false);
     }
 }
