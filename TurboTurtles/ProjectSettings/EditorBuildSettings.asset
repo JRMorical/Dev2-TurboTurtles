@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/nathan.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    guid: dc78444b12c9e074381dd6706e125e7a
+  - enabled: 1
+    path: Assets/Scenes/Main Level.unity
+    guid: 4dff15caae638514183ce5ef68f27ba9
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -15,7 +15,6 @@ public class damage : MonoBehaviour
 
     bool isDamaging;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         if (type == damageType.bullet)
@@ -25,7 +24,6 @@ public class damage : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     private void OnTriggerEnter(Collider other)
     {
         if (other.isTrigger || other.CompareTag("Ranged") || other.CompareTag("Melee") || other.CompareTag("Spawner"))
@@ -35,6 +33,7 @@ public class damage : MonoBehaviour
         if (dmg != null && type != damageType.DOT)
         {
             dmg.takeDamage(damageAmount);
+            gamemanager.instance.OnSuccessfulHit?.Invoke(other.gameObject, gameObject);
         }
 
         if (type == damageType.bullet)

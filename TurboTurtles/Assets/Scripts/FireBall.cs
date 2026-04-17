@@ -12,7 +12,7 @@ public class Fireball : MonoBehaviour
     void Start()
     {
         Physics.IgnoreCollision(GetComponent<Collider>(),
-       GameObject.FindGameObjectWithTag("Player").GetComponent<Collider>()); 
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Collider>());
 
         Vector3 dir = (targetPoint - transform.position).normalized;
         GetComponent<Rigidbody>().linearVelocity = dir * speed;
@@ -25,16 +25,16 @@ public class Fireball : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-      
         if (trailEffect != null)
             trailEffect.Stop();
 
-       
         IDamage dmg = col.collider.GetComponent<IDamage>();
         if (dmg != null)
+        {
             dmg.takeDamage(damage);
+            gamemanager.instance.OnSuccessfulHit?.Invoke(col.gameObject, gameObject);
+        }
 
-        
         if (explosionEffect != null)
         {
             explosionEffect.transform.SetParent(null);

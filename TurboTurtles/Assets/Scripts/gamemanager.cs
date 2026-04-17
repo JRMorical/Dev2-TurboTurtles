@@ -15,13 +15,27 @@ public class gamemanager : MonoBehaviour
     [SerializeField] TMP_Text collectibleText;
     [SerializeField] TMP_Text scoreText;
 
+    [SerializeField] TMP_Text levelText;
+    [SerializeField] TMP_Text pointsText;
+
+    [SerializeField] GameObject menuUpgrades;
     [SerializeField] GameObject menuSkillTree;
 
     public Image playerHPBar;
     public GameObject PlayerDamageFlashScreen;
+
+    [SerializeField] int maxLevel = 20;
+    [SerializeField] double nextLevel = 5;
+
+    public int exp;
+    public int level = 1;
+    public int points;
+
     public bool isPaused;
     public GameObject player;
     public playerController playerScript;
+
+    public System.Action<GameObject, GameObject> OnSuccessfulHit;
 
     float timeScaleOrig;
 
@@ -33,7 +47,6 @@ public class gamemanager : MonoBehaviour
     int score;
     int pointsPerKill = 100;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         instance = this;
@@ -49,7 +62,6 @@ public class gamemanager : MonoBehaviour
         updateScoreUI();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetButtonDown("Cancel"))
@@ -60,10 +72,21 @@ public class gamemanager : MonoBehaviour
                 menuActive = menuPause;
                 menuActive.SetActive(true);
             }
-            else if (menuActive == menuPause)
+            else if (menuActive == menuPause || menuActive == menuUpgrades || menuActive == menuSkillTree)
             {
                 stateUnpause();
             }
+        }
+
+        if (levelText != null)
+            levelText.text = "Level: " + level + "/" + maxLevel;
+
+        if (pointsText != null)
+            pointsText.text = "Points: " + points;
+
+        if (Input.GetKeyDown(KeyCode.U) && menuActive == null)
+        {
+            openUpgradeMenu();
         }
 
         if (Input.GetKeyDown(KeyCode.I))
@@ -78,6 +101,17 @@ public class gamemanager : MonoBehaviour
             {
                 stateUnpause();
             }
+        }
+
+        if (exp >= nextLevel && level < maxLevel)
+        {
+            level++;
+            points += 3;
+
+            nextLevel = (nextLevel * 1.3) + 2;
+            exp = 0;
+
+            openUpgradeMenu();
         }
     }
 
@@ -95,8 +129,12 @@ public class gamemanager : MonoBehaviour
         Time.timeScale = timeScaleOrig;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        menuActive.SetActive(false);
-        menuActive = null;
+
+        if (menuActive != null)
+        {
+            menuActive.SetActive(false);
+            menuActive = null;
+        }
     }
 
     public void youLose()
@@ -113,7 +151,6 @@ public class gamemanager : MonoBehaviour
 
         if (gameGoalCount <= 0)
         {
-            // You Win!!!
             statePause();
             menuActive = menuWin;
             menuActive.SetActive(true);
@@ -160,9 +197,16 @@ public class gamemanager : MonoBehaviour
 
     void updateScoreUI()
     {
-        if(scoreText != null)
+        if (scoreText != null)
         {
             scoreText.text = "Score " + score;
         }
+    }
+
+    public void openUpgradeMenu()
+    {
+        statePause();
+        menuActive = menuUpgrades;
+        menuActive.SetActive(true);
     }
 }
