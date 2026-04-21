@@ -236,6 +236,7 @@ public class enemyAI : MonoBehaviour, IDamage
     public void takeDamage(int amount)
     {
         HP -= amount;
+        HitFeedback.instance.ShowHit();
   
         if (HP <= 0)
         {
