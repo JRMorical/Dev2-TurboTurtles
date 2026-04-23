@@ -5,12 +5,6 @@ using Unity.VisualScripting;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
-    enum AttackType
-    {
-        IDLE,
-        MELEE,
-        RANGED
-    }
     public enum EnemyRole
     {
         MELEE_ONLY,
@@ -24,7 +18,6 @@ public class enemyAI : MonoBehaviour, IDamage
     [Header("Enemy Stats")]
     [SerializeField] int HP;
     [SerializeField] int enemyRotateSpeed = 5;
-    [Range(1, 3)][SerializeField] float meleeRange;
     [Range(13, 25)][SerializeField] float rangedRange;
     [SerializeField] Renderer model;
     [SerializeField] NavMeshAgent agent;
@@ -50,13 +43,10 @@ public class enemyAI : MonoBehaviour, IDamage
     enemyAI spawner;
 
     [Header("Attacking")]
-    AttackType currentType;
     float spawnTimer;
     bool isTravesingOffMeshLink;
-    float attackCooldown;
 
     [Header("Player Position")]
-    Vector3 playerDir;
     public Vector3 player;
 
     void Start()
@@ -75,13 +65,10 @@ public class enemyAI : MonoBehaviour, IDamage
     void Update()
     {
         //shootTimer += Time.deltaTime;
-        //attackCooldown -= Time.deltaTime;
         //spawnTimer += Time.deltaTime;
-        playerDir = gamemanager.instance.player.transform.position - transform.position;
         player = gamemanager.instance.player.transform.position;
+        HandleNavJump();
         behavior?.Tick(this);
-        //Chase();
-        //EnemyTypeActions();
     }
     void SetEnemyRole()
     {
@@ -94,64 +81,11 @@ public class enemyAI : MonoBehaviour, IDamage
         else if (CompareTag("Spawner"))
             role = EnemyRole.SPAWNER;
     }
-    void EnemyTypeActions()
+
+    public void Chase(Vector3 _target)
     {
-        //playerDir = gamemanager.instance.player.transform.position - transform.position;
-        player = gamemanager.instance.player.transform.position;
-
-        float dist = Vector3.Distance(player, transform.position);
-
-        switch (role)
-        {
-            case EnemyRole.MELEE_ONLY:
-                currentType = dist <= meleeRange ? AttackType.MELEE : AttackType.IDLE;
-                break;
-
-            case EnemyRole.RANGED_ONLY:
-                currentType = dist <= rangedRange ? AttackType.RANGED : AttackType.IDLE;            
-                break;
-
-            case EnemyRole.SPAWNER:
-                TrySpawn();
-                break;
-        }
-        ExecuteStateActions();
-    }
-    void ExecuteStateActions()
-    {
-        if (isTravesingOffMeshLink) return;
-        switch(currentType)
-        {
-            case AttackType.MELEE:
-                if(attackCooldown <= 0)
-                {
-                    Melee();
-                    attackCooldown = 0.5f;
-                }
-                break;
-
-            case AttackType.RANGED:
-                Attack();
-                break;
-
-            case AttackType.IDLE:
-                Chase();
-                break;
-
-            default:
-                break;
-        }
-    }
-    void Chase()
-    {
-        //agent.isStopped = false;
-        //agent.SetDestination(player);
-        moveTo(player);
+        MoveTo(_target);
         rotateToPlayer();
-        if(agent.isOnOffMeshLink)
-        {
-            StartCoroutine(LinkJump());
-        }
     }
     void Attack()
     {
@@ -165,14 +99,6 @@ public class enemyAI : MonoBehaviour, IDamage
             shootTimer = 0;
             Shoot();
         }
-    }
-   void Melee()
-    {
-        agent.isStopped = true;
-        transform.LookAt(new Vector3(player.x, player.y, player.z));
-
-        rotateToPlayer();
-        anim.PlayAttack();
     }
     void Shoot()
     {
@@ -211,25 +137,34 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         spawner = s;
     }
-    public void moveTo(Vector3 _target)
+    public void MoveTo(Vector3 _target)
     {
         agent.isStopped = false;
         agent.SetDestination(_target);
     }
-    public void moveStop()
+    public void MoveStop()
     {
         agent.isStopped = true;
     }
     public void rotateToPlayer()
     {
+        Vector3 playerDir = player - transform.position;
         playerDir.y = 0;
         if (playerDir.sqrMagnitude < 0.01f) return;
         Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z).normalized);
         transform.rotation = Quaternion.Lerp(transform.rotation, rot , Time.deltaTime * enemyRotateSpeed);
     }
-    public void playMeleeAttack()
+    public void PlayMeleeAttack()
     {
         anim.PlayAttack();
+    }
+    void HandleNavJump()
+    {
+        if (isTravesingOffMeshLink) return;
+        if(agent.isOnOffMeshLink)
+        {
+            StartCoroutine(LinkJump());
+        }
     }
     IEnumerator LinkJump()
     {

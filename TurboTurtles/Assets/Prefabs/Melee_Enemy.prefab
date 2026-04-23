@@ -30,15 +30,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Height
-      value: 3
+      value: 2.75
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Radius
-      value: 2.5
+      value: 1.55
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Center.y
-      value: -0.55
+      value: -0.31
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_IsTrigger
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2231934648368799502, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_StoppingDistance
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3135308820066057007, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Layer
@@ -171,6 +171,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: -5462048937381509309}
+    - targetCorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3326941559606179744}
     - targetCorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
@@ -220,6 +223,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
   m_PrefabInstance: {fileID: 8168110804029853954}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &-5462048937381509309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8697784469292559806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9696ff85f8ed149b6fd5d8b8b9b062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::enemyMelee
+  range: 2
 --- !u!114 &3326941559606179744
 MonoBehaviour:
   m_ObjectHideFlags: 0

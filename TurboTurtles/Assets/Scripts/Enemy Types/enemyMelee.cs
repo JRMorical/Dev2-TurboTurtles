@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class enemyMelee : MonoBehaviour, IEnemyBehaviour
 {
-    [SerializeField] float range = 2f;
+    [Range(1, 3)][SerializeField] float range = 2f;
     float cooldown;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,15 +19,15 @@ public class enemyMelee : MonoBehaviour, IEnemyBehaviour
         float dist = Vector3.Distance(_ai.transform.position, _ai.player);
         if(dist > range)
         {
-            _ai.moveTo(_ai.player);
+            _ai.Chase(_ai.player);
             return;
         }
-        _ai.moveStop();
+        _ai.MoveStop();
         _ai.rotateToPlayer();
         cooldown -= Time.deltaTime;
         if(cooldown <= 0)
         {
-            _ai.playMeleeAttack();
+            _ai.PlayMeleeAttack();
             cooldown = 0.5f;
         }
     }
