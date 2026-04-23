@@ -12,24 +12,22 @@ public class enemyAI : MonoBehaviour, IDamage
         SPAWNER
     }
 
-    [Header("Role")]
+    [Header("-----Role-----")]
     [SerializeField] EnemyRole role;
 
-    [Header("Enemy Stats")]
+    [Header("-----Enemy Stats-----")]
     [SerializeField] int HP;
     [SerializeField] int enemyRotateSpeed = 5;
-    [Range(13, 25)][SerializeField] float rangedRange;
+
+    [Header("-----Enemy Brain-----")]
     [SerializeField] Renderer model;
     [SerializeField] NavMeshAgent agent;
-
-    [Header("Projectile")]
-    [SerializeField] GameObject bullet;
-    [SerializeField] float shootRate = 1f;
-    [SerializeField] Transform shootPos;
-    float shootTimer;
-
-    enemyAnimator anim;
+    [SerializeField] MonoBehaviour enemyBehavior;
     IEnemyBehaviour behavior;
+    enemyAnimator anim;
+    bool isTravesingOffMeshLink;
+    Vector3 Player;
+    public Vector3 player => Player;
 
     Color colorOrig;
 
@@ -44,68 +42,23 @@ public class enemyAI : MonoBehaviour, IDamage
 
     [Header("Attacking")]
     float spawnTimer;
-    bool isTravesingOffMeshLink;
 
-    [Header("Player Position")]
-    public Vector3 player;
-
-    void Start()
+    void Awake()
     {
-        behavior = GetComponent<IEnemyBehaviour>();
-
+        behavior = enemyBehavior as IEnemyBehaviour;
         if (behavior == null)
         {
             Debug.LogError("No IEnemyBehaviour found on " + gameObject.name);
         }
-        colorOrig = model.material.color;
-        gamemanager.instance.updateGameGoal(1);
-        anim = GetComponent<enemyAnimator>();
-        SetEnemyRole();
+    }
+    void Start()
+    {
+        StartCalls();
     }
     void Update()
     {
-        //shootTimer += Time.deltaTime;
         //spawnTimer += Time.deltaTime;
-        player = gamemanager.instance.player.transform.position;
-        HandleNavJump();
-        behavior?.Tick(this);
-    }
-    void SetEnemyRole()
-    {
-        if (CompareTag("Melee"))
-            role = EnemyRole.MELEE_ONLY;
-
-        else if (CompareTag("Ranged"))
-            role = EnemyRole.RANGED_ONLY;
-
-        else if (CompareTag("Spawner"))
-            role = EnemyRole.SPAWNER;
-    }
-
-    public void Chase(Vector3 _target)
-    {
-        MoveTo(_target);
-        rotateToPlayer();
-    }
-    void Attack()
-    {
-        agent.isStopped = true;
-        shootPos.transform.LookAt(new Vector3(player.x, player.y, player.z));
-        rotateToPlayer();
-        anim.PlayProjectile();
-
-        if (shootTimer >= shootRate)
-        {
-            shootTimer = 0;
-            Shoot();
-        }
-    }
-    void Shoot()
-    {
-        if (bullet != null)
-        {
-            Instantiate(bullet, shootPos.position, shootPos.rotation);
-        }
+        UpdateCalls();
     }
     void TrySpawn()
     {
@@ -137,6 +90,40 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         spawner = s;
     }
+    void UpdateCalls()
+    {
+        Player = gamemanager.instance.player.transform.position;
+        HandleNavJump();
+        behavior?.Tick(this);
+    }
+    void StartCalls()
+    {
+        colorOrig = model.material.color;
+        gamemanager.instance.updateGameGoal(1);
+        anim = GetComponent<enemyAnimator>();
+        SetEnemyRole();
+    }
+
+    void SetEnemyRole()
+    {
+        if (CompareTag("Melee"))
+            role = EnemyRole.MELEE_ONLY;
+
+        else if (CompareTag("Ranged"))
+            role = EnemyRole.RANGED_ONLY;
+
+        else if (CompareTag("Spawner"))
+            role = EnemyRole.SPAWNER;
+    }
+    public void Chase(Vector3 _target)
+    {
+        MoveTo(_target);
+        rotateToPlayer();
+    }
+    public float PlayerDistance()
+    {
+        return Vector3.Distance(Player, transform.position);
+    }
     public void MoveTo(Vector3 _target)
     {
         agent.isStopped = false;
@@ -157,6 +144,10 @@ public class enemyAI : MonoBehaviour, IDamage
     public void PlayMeleeAttack()
     {
         anim.PlayAttack();
+    }
+    public void PlayProjectileAttack()
+    {
+        anim.PlayProjectile();
     }
     void HandleNavJump()
     {
@@ -200,13 +191,8 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         HP -= amount;
         
-  
         if (HP <= 0)
-        {
-            //if (role == EnemyRole.SPAWNER)
-            //{
-            //    currentSpawned--;
-            //}             
+        {      
             if (spawner != null)
                 spawner.currentSpawned--;
             gamemanager.instance.updateGameGoal(-1);

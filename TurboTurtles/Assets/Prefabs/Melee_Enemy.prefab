@@ -88,6 +88,10 @@ PrefabInstance:
       propertyPath: rangedRange
       value: 18.9
       objectReference: {fileID: 0}
+    - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: enemyBehavior
+      value: 
+      objectReference: {fileID: -5462048937381509309}
     - target: {fileID: 5236426869698311089, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.13

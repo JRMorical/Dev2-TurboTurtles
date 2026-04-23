@@ -132,6 +132,10 @@ PrefabInstance:
       propertyPath: rangedRange
       value: 13
       objectReference: {fileID: 0}
+    - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: enemyBehavior
+      value: 
+      objectReference: {fileID: 4639570581065126506}
     - target: {fileID: 7442422263291713385, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Height
       value: 2
@@ -196,10 +200,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 8714928463415384162}
+      insertIndex: 1
+      addedObject: {fileID: 4639570581065126506}
     - targetCorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
       insertIndex: 3
+      addedObject: {fileID: 8714928463415384162}
+    - targetCorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
+      insertIndex: 4
       addedObject: {fileID: 7299306321787154013}
   m_SourcePrefab: {fileID: 100100000, guid: cae03782b8988d141962f09292198154, type: 3}
 --- !u!114 &3791618855442909972 stripped
@@ -223,6 +230,22 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
   m_PrefabInstance: {fileID: 8114148923709780354}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4639570581065126506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8752032220630977854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7291cb299cd079240b30fc779abf3662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::enemyRanged
+  rangedRange: 25
+  bullet: {fileID: 1328444759764535204, guid: bdcde4c3afdd2c940a7cbe6ee495c5f3, type: 3}
+  shootRate: 1
+  shootPos: {fileID: 7724137360762686588}
 --- !u!114 &8714928463415384162
 MonoBehaviour:
   m_ObjectHideFlags: 0
