@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class gamemanager : MonoBehaviour
 {
@@ -14,6 +15,12 @@ public class gamemanager : MonoBehaviour
 
     [SerializeField] TMP_Text collectibleText;
     [SerializeField] TMP_Text scoreText;
+
+    [SerializeField] TMP_Text waveText;
+    [SerializeField] TMP_Text nextWaveText;
+    [SerializeField] GameObject waveUIRoot;
+    EnemyWaveManager activeWaveArea;
+    [SerializeField] Transform currentCheckpoint;
 
     [SerializeField] TMP_Text levelText;
     [SerializeField] TMP_Text pointsText;
@@ -147,14 +154,12 @@ public class gamemanager : MonoBehaviour
     public void updateGameGoal(int amount)
     {
         gameGoalCount += amount;
-        gameGoalCountText.text = gameGoalCount.ToString("F0");
 
-        if (gameGoalCount <= 0)
-        {
-            statePause();
-            menuActive = menuWin;
-            menuActive.SetActive(true);
-        }
+        if (gameGoalCount < 0)
+            gameGoalCount = 0;
+
+        if (gameGoalCountText != null)
+            gameGoalCountText.text = gameGoalCount.ToString();
     }
 
     public void addCollectible()
@@ -208,5 +213,65 @@ public class gamemanager : MonoBehaviour
         statePause();
         menuActive = menuUpgrades;
         menuActive.SetActive(true);
+    }
+
+    public void ShowWaveUI(bool show)
+    {
+        if (waveUIRoot != null)
+            waveUIRoot.SetActive(show);
+    }
+
+    public void UpdateWaveText(string message)
+    {
+        if (waveText != null)
+            waveText.text = message;
+    }
+
+    public void UpdateNextWaveText(string message)
+    {
+        if (nextWaveText != null)
+            nextWaveText.text = message;
+    }
+
+    public void SetActiveWaveArea(EnemyWaveManager area)
+    {
+        activeWaveArea = area;
+
+        if (area != null && area.RespawnPoint != null)
+            currentCheckpoint = area.RespawnPoint;
+    }
+
+    public void HandlePlayerDeath()
+    {
+        StartCoroutine(RespawnRoutine());
+    }
+
+    IEnumerator RespawnRoutine()
+    {
+        statePause();
+
+        yield return new WaitForSecondsRealtime(1.5f);
+
+        if (activeWaveArea != null)
+            activeWaveArea.ResetArea();
+
+        player.transform.position = currentCheckpoint.position;
+        player.transform.rotation = currentCheckpoint.rotation;
+
+        playerScript.HP = playerScript.HPOrig;
+        playerScript.updatePlayerUI();
+
+        stateUnpause();
+
+        if (activeWaveArea != null)
+            activeWaveArea.StartArea();
+    }
+
+    public void SetGameGoalCount(int amount)
+    {
+        gameGoalCount = Mathf.Max(0, amount);
+
+        if (gameGoalCountText != null)
+            gameGoalCountText.text = gameGoalCount.ToString();
     }
 }
