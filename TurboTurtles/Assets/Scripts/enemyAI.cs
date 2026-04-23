@@ -36,6 +36,8 @@ public class enemyAI : MonoBehaviour, IDamage
     float shootTimer;
 
     enemyAnimator anim;
+    IEnemyBehaviour behavior;
+
     Color colorOrig;
 
     [Header("Spawner")]
@@ -55,10 +57,16 @@ public class enemyAI : MonoBehaviour, IDamage
 
     [Header("Player Position")]
     Vector3 playerDir;
-    Vector3 player;
+    public Vector3 player;
 
     void Start()
     {
+        behavior = GetComponent<IEnemyBehaviour>();
+
+        if (behavior == null)
+        {
+            Debug.LogError("No IEnemyBehaviour found on " + gameObject.name);
+        }
         colorOrig = model.material.color;
         gamemanager.instance.updateGameGoal(1);
         anim = GetComponent<enemyAnimator>();
@@ -66,10 +74,14 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     void Update()
     {
-        shootTimer += Time.deltaTime;
-        attackCooldown -= Time.deltaTime;
-        spawnTimer += Time.deltaTime;
-        EnemyTypeActions();
+        //shootTimer += Time.deltaTime;
+        //attackCooldown -= Time.deltaTime;
+        //spawnTimer += Time.deltaTime;
+        playerDir = gamemanager.instance.player.transform.position - transform.position;
+        player = gamemanager.instance.player.transform.position;
+        behavior?.Tick(this);
+        //Chase();
+        //EnemyTypeActions();
     }
     void SetEnemyRole()
     {
@@ -84,7 +96,7 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     void EnemyTypeActions()
     {
-        playerDir = gamemanager.instance.player.transform.position - transform.position;
+        //playerDir = gamemanager.instance.player.transform.position - transform.position;
         player = gamemanager.instance.player.transform.position;
 
         float dist = Vector3.Distance(player, transform.position);
@@ -132,8 +144,9 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     void Chase()
     {
-        agent.isStopped = false;
-        agent.SetDestination(player);
+        //agent.isStopped = false;
+        //agent.SetDestination(player);
+        moveTo(player);
         rotateToPlayer();
         if(agent.isOnOffMeshLink)
         {
@@ -198,10 +211,25 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         spawner = s;
     }
-    void rotateToPlayer()
+    public void moveTo(Vector3 _target)
     {
+        agent.isStopped = false;
+        agent.SetDestination(_target);
+    }
+    public void moveStop()
+    {
+        agent.isStopped = true;
+    }
+    public void rotateToPlayer()
+    {
+        playerDir.y = 0;
+        if (playerDir.sqrMagnitude < 0.01f) return;
         Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z).normalized);
         transform.rotation = Quaternion.Lerp(transform.rotation, rot , Time.deltaTime * enemyRotateSpeed);
+    }
+    public void playMeleeAttack()
+    {
+        anim.PlayAttack();
     }
     IEnumerator LinkJump()
     {
