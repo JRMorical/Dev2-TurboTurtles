@@ -12,6 +12,7 @@ public class HitFeedback : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        Debug.Log("HitFeedback is ready");
     }
 
     public void ShowHit()
