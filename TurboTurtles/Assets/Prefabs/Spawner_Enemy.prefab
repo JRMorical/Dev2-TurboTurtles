@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: rangedPrefab
       value: 
       objectReference: {fileID: 8752032220630977854, guid: d71c2a5b6d890604da4c9d33dec593e3, type: 3}
+    - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: enemyBehavior
+      value: 
+      objectReference: {fileID: 8298192301138237608}
     - target: {fileID: 6158815522623721085, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -138,5 +142,33 @@ PrefabInstance:
     - {fileID: 6289347496269691909, guid: cae03782b8988d141962f09292198154, type: 3}
     - {fileID: 1048413007357402677, guid: cae03782b8988d141962f09292198154, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 8298192301138237608}
   m_SourcePrefab: {fileID: 100100000, guid: cae03782b8988d141962f09292198154, type: 3}
+--- !u!1 &1944054213418039283 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
+  m_PrefabInstance: {fileID: 1374972939049323343}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8298192301138237608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944054213418039283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f755190ced8b3bb488e090c66ac53dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::enemySpawner
+  enemyPrefabs:
+  - {fileID: 8697784469292559806, guid: 85fd8759aa39a1d40baa5c1448fe8197, type: 3}
+  - {fileID: 8752032220630977854, guid: d71c2a5b6d890604da4c9d33dec593e3, type: 3}
+  spawnCooldown: 5
+  spawnRadius: 8
+  maxSpawned: 3
+  spawnRangeMax: 4
+  spawnRangeMin: -4

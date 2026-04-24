@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using Unity.VisualScripting;
 
 public class enemyAI : MonoBehaviour, IDamage
 {
@@ -28,20 +27,8 @@ public class enemyAI : MonoBehaviour, IDamage
     bool isTravesingOffMeshLink;
     Vector3 Player;
     public Vector3 player => Player;
-
+    enemySpawner spawner;
     Color colorOrig;
-
-    [Header("Spawner")]
-    [SerializeField] GameObject meleePrefab;
-    [SerializeField] GameObject rangedPrefab;
-    [SerializeField] float spawnCooldown = 5f;
-    [SerializeField] float spawnRadius = 8f;
-    [SerializeField] int maxSpawned = 3;
-    int currentSpawned;
-    enemyAI spawner;
-
-    [Header("Attacking")]
-    float spawnTimer;
 
     void Awake()
     {
@@ -57,38 +44,11 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     void Update()
     {
-        //spawnTimer += Time.deltaTime;
         UpdateCalls();
     }
-    void TrySpawn()
+    public void SetSpawner(enemySpawner _spawner)
     {
-        if (spawnTimer < spawnCooldown) return;
-        if (currentSpawned >= maxSpawned) return;
-
-        spawnTimer = 0;
-        currentSpawned++;
-
-        GameObject prefabToSpawn;
-
-        int roll = Random.Range(0, 2);
-
-        if (roll == 0)
-            prefabToSpawn = meleePrefab;
-        else
-            prefabToSpawn = rangedPrefab;
-
-        Vector3 offset = Random.insideUnitSphere * spawnRadius;
-        offset.y = 0;
-
-        Vector3 pos = transform.position + offset + Vector3.right * Random.Range(-2f, 2f); ;
-
-        GameObject enemy = Instantiate(prefabToSpawn, pos, transform.rotation);
-        enemyAI ai = enemy.GetComponent<enemyAI>();
-        ai.SetSpawner(this);
-    }
-    public void SetSpawner(enemyAI s)
-    {
-        spawner = s;
+        spawner = _spawner;
     }
     void UpdateCalls()
     {
@@ -192,9 +152,12 @@ public class enemyAI : MonoBehaviour, IDamage
         HP -= amount;
         
         if (HP <= 0)
-        {      
+        {          
             if (spawner != null)
-                spawner.currentSpawned--;
+            {
+                spawner.SpawnDeath();
+                spawner.ResetTimer();
+            }             
             gamemanager.instance.updateGameGoal(-1);
             gamemanager.instance.AddScore();
             gamemanager.instance.exp++;
