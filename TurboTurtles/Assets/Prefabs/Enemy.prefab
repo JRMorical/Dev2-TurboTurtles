@@ -170,8 +170,8 @@ MonoBehaviour:
   role: 0
   HP: 5
   enemyRotateSpeed: 5
-  meleeRange: 0
-  rangedRange: 0
+  meleeRange: 1
+  rangedRange: 13
   model: {fileID: 62693446515639457}
   agent: {fileID: 2231934648368799502}
   bullet: {fileID: 1328444759764535204, guid: bdcde4c3afdd2c940a7cbe6ee495c5f3, type: 3}

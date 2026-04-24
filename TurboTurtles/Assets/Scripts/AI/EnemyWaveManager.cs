@@ -1,10 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using JetBrains.Annotations;
 
-public class EnemyRoundSpawner : MonoBehaviour
+public class EnemyWaveManager : MonoBehaviour
 {
     [System.Serializable]
     public class EnemySpawnEntry
@@ -13,8 +11,6 @@ public class EnemyRoundSpawner : MonoBehaviour
         public int startingAmount = 3;
         public int increasePerWave = 1;
     }
-
-    public System.Action<EnemyRoundSpawner> OnSpawnerFinished;
 
     [Header("Spawn Points")]
     [SerializeField] EnemySpawnPoint[] spawnPoints;
@@ -26,34 +22,58 @@ public class EnemyRoundSpawner : MonoBehaviour
     [SerializeField] float timeBetweenSpawns = 0.5f;
     [SerializeField] float timeBetweenWaves = 5f;
     [SerializeField] float startDelay = 3f;
-    [SerializeField] bool startOnPlay = true;
     [SerializeField] int maxWaves = 5;
 
-    int currentWave = 0;
-    int enemiesAlive = 0;
-    bool waveInProgress = false;
+    [Header("Area Settings")]
+    [SerializeField] Transform respawnPoint;
+    [SerializeField] GameObject bridgeToLower;
+    [SerializeField] float completeDelay = 3f;
+    [SerializeField] EnemyWaveManager nextArea;
+    [SerializeField] bool startOnTrigger = true;
+    [SerializeField] bool startOnPlay = false;
+
+    int currentWave;
+    bool hasStarted;
+    bool isCompleted;
 
     Coroutine waveRoutine;
     List<GameObject> spawnedEnemies = new List<GameObject>();
-    bool isActive;
+
+    public Transform RespawnPoint => respawnPoint;
 
     void Start()
     {
-        UpdateWaveUI();
-        UpdateNextWaveUI("");
-
         if (startOnPlay)
-        {
-            Begin();
-        }
+            StartArea();
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (!startOnTrigger) return;
+        if (!other.CompareTag("Player")) return;
+
+        StartArea();
+    }
+
+    public void StartArea()
+    {
+        if (hasStarted || isCompleted)
+            return;
+
+        hasStarted = true;
+        currentWave = 0;
+
+        gamemanager.instance.SetActiveWaveArea(this);
+        gamemanager.instance.ShowWaveUI(true);
+        gamemanager.instance.SetGameGoalCount(0);
+
+        waveRoutine = StartCoroutine(WaveLoop());
     }
 
     IEnumerator WaveLoop()
     {
         if (startDelay > 0)
-        {
             yield return StartCoroutine(CountdownRoutine(startDelay));
-        }
 
         while (currentWave < maxWaves)
         {
@@ -62,27 +82,20 @@ public class EnemyRoundSpawner : MonoBehaviour
 
             yield return StartCoroutine(SpawnWave());
 
-            waveInProgress = true;
-
             yield return new WaitUntil(() => CountLivingSpawnedEnemies() <= 0);
 
-            waveInProgress = false;
-
             if (currentWave < maxWaves)
-            {
                 yield return StartCoroutine(CountdownRoutine(timeBetweenWaves));
-            }
         }
 
-        if (OnSpawnerFinished != null)
-            OnSpawnerFinished(this);
+        StartCoroutine(CompleteAreaRoutine());
     }
 
     IEnumerator SpawnWave()
     {
         if (spawnPoints == null || spawnPoints.Length == 0)
         {
-            Debug.LogWarning("No spawn points assigned.");
+            Debug.LogWarning(gameObject.name + " has no spawn points assigned.");
             yield break;
         }
 
@@ -109,18 +122,7 @@ public class EnemyRoundSpawner : MonoBehaviour
         Transform spawnT = point.GetSpawnTransform();
 
         GameObject spawnedEnemy = Instantiate(enemyPrefab, spawnT.position, spawnT.rotation);
-
-        //EnemyHealth enemyHealth = spawnedEnemy.GetComponent<EnemyHealth>();
-        //if (enemyHealth != null)
-        //{
-        //    enemyHealth.SetSpawner(this);
-        //}
-
-        //enemiesAlive++;
         spawnedEnemies.Add(spawnedEnemy);
-
-        //if (gamemanager.instance != null)
-        //    gamemanager.instance.updateGameGoal(0);
     }
 
     IEnumerator CountdownRoutine(float duration)
@@ -137,20 +139,40 @@ public class EnemyRoundSpawner : MonoBehaviour
         UpdateNextWaveUI("");
     }
 
-    public void NotifyEnemyDied()
+    IEnumerator CompleteAreaRoutine()
     {
-        enemiesAlive--;
-        if (enemiesAlive < 0)
-            enemiesAlive = 0;
+        isCompleted = true;
+        UpdateNextWaveUI("");
 
-        if (gamemanager.instance != null)
-            gamemanager.instance.updateGameGoal(-1);
+        yield return new WaitForSeconds(completeDelay);
+
+        if (bridgeToLower != null)
+            bridgeToLower.GetComponent<DrawBridgeController>()?.LowerBridge();
+
+        gamemanager.instance.ShowWaveUI(false);
+
+        if (nextArea == null)
+            gamemanager.instance.youWin();
+    }
+
+    int CountLivingSpawnedEnemies()
+    {
+        int livingCount = 0;
+
+        for (int i = spawnedEnemies.Count - 1; i >= 0; i--)
+        {
+            if (spawnedEnemies[i] == null)
+                spawnedEnemies.RemoveAt(i);
+            else
+                livingCount++;
+        }
+
+        return livingCount;
     }
 
     void UpdateWaveUI()
     {
-        if (gamemanager.instance == null)
-            return;
+        if (gamemanager.instance == null) return;
 
         if (currentWave == maxWaves)
             gamemanager.instance.UpdateWaveText("Final Wave!");
@@ -164,18 +186,7 @@ public class EnemyRoundSpawner : MonoBehaviour
             gamemanager.instance.UpdateNextWaveText(message);
     }
 
-    public void Begin()
-    {
-        if (waveRoutine != null)
-            return;
-
-        currentWave = 0;
-        enemiesAlive = 0;
-        isActive = true;
-        waveRoutine = StartCoroutine(WaveLoop());
-    }
-
-    public void ResetSpawner()
+    public void ResetArea()
     {
         if (waveRoutine != null)
         {
@@ -190,31 +201,14 @@ public class EnemyRoundSpawner : MonoBehaviour
         }
 
         spawnedEnemies.Clear();
+
         currentWave = 0;
-        enemiesAlive = 0;
-        waveInProgress = false;
+        hasStarted = false;
+        isCompleted = false;
 
-        UpdateNextWaveUI("");
-        if (gamemanager.instance != null)
-            gamemanager.instance.UpdateWaveText("");
+        gamemanager.instance.SetGameGoalCount(0);
+        gamemanager.instance.UpdateWaveText("");
+        gamemanager.instance.UpdateNextWaveText("");
     }
 
-    int CountLivingSpawnedEnemies()
-    {
-        int livingCount = 0;
-
-        for (int i = spawnedEnemies.Count - 1; i >= 0; i--)
-        {
-            if (spawnedEnemies[i] == null)
-            {
-                spawnedEnemies.RemoveAt(i);
-            }
-            else
-            {
-                livingCount++;
-            }
-        }
-
-        return livingCount;
-    }
 }
