@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using System.Collections.Generic;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -22,8 +23,7 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField] float shootRate;
     public float damageReductionMultiplier = 1f;
 
-    [SerializeField] GameObject fireballPrefab;
-    [SerializeField] Transform firePoint;
+    [SerializeField] Transform handPoint;
 
     [SerializeField] Volume postProcessVolume;
     [SerializeField] float pulseThreshold = 0.40f;
@@ -44,6 +44,11 @@ public class playerController : MonoBehaviour, IDamage
 
     Vector3 moveDir;
     Vector3 playerVel;
+
+    List<SpellStats> spellList = new List<SpellStats>();
+    List<GameObject> staffObjects = new List<GameObject>();
+    int spellListPos = 0;
+
 
     void Start()
     {
@@ -71,7 +76,6 @@ public class playerController : MonoBehaviour, IDamage
         }
 
         float healthPct = Mathf.Clamp01((float)HP / HPOrig);
-
         float baseIntensity = Mathf.Lerp(intensityLowHP, 0f, healthPct);
         float target = baseIntensity;
 
@@ -81,7 +85,6 @@ public class playerController : MonoBehaviour, IDamage
             float pulseSpeed = Mathf.Lerp(pulseSpeedMin, pulseSpeedMax, danger);
             float pulse = Mathf.Sin(Time.time * pulseSpeed * Mathf.PI * 2f);
             target += pulse * pulseAmplitude * danger;
-
             _vignette.color.Override(Color.Lerp(Color.black, new Color(0.55f, 0f, 0f), danger));
         }
         else
@@ -112,10 +115,14 @@ public class playerController : MonoBehaviour, IDamage
         controller.Move(playerVel * Time.deltaTime);
         playerVel.y -= gravity * Time.deltaTime;
 
-        if (Input.GetButton("Fire1") && shootTimer >= shootRate)
+        if (spellList.Count > 0)
         {
-            shoot();
+            float currentRate = spellList[spellListPos].castRate;
+            if (Input.GetButton("Fire1") && shootTimer >= currentRate)
+                shoot();
         }
+
+        selectStaff();
     }
 
     void sprint()
@@ -144,18 +151,69 @@ public class playerController : MonoBehaviour, IDamage
 
         shootTimer = 0;
 
-        RaycastHit hit;
-        Vector3 targetPoint;
+        SpellStats current = spellList[spellListPos];
 
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
-            targetPoint = hit.point;
-        else
-            targetPoint = Camera.main.transform.position + Camera.main.transform.forward * shootDist;
-
-        if (fireballPrefab != null && firePoint != null)
+        switch (current.spellType)
         {
-            GameObject fb = Instantiate(fireballPrefab, firePoint.position, Camera.main.transform.rotation);
-            fb.GetComponent<Fireball>().targetPoint = targetPoint;
+            case SpellType.Fire:
+            case SpellType.Ice:
+                Vector3 spawnPos = handPoint.position;
+                Vector3 targetPoint = spawnPos + Camera.main.transform.forward * current.castDist;
+
+                GameObject proj = Instantiate(current.projectilePrefab, spawnPos, Quaternion.identity);
+                SpellProjectile sp = proj.GetComponent<SpellProjectile>();
+                if (sp != null)
+                    sp.Init(targetPoint, current.damage, current.projectileSpeed, current.slowAmount, current.slowDuration);
+                break;
+
+            case SpellType.Shock:
+                ShockSpell.Fire(current, ignoreLayer);
+                break;
+        }
+    }
+
+    public void PickupSpell(SpellStats stats)
+    {
+        if (spellList.Contains(stats)) return;
+
+        spellList.Add(stats);
+
+        if (stats.staffPrefab != null && handPoint != null)
+        {
+            GameObject obj = Instantiate(stats.staffPrefab, handPoint.position, handPoint.rotation, handPoint);
+            staffObjects.Add(obj);
+        }
+        else
+        {
+            staffObjects.Add(null);
+        }
+
+        spellListPos = spellList.Count - 1;
+        equipStaff();
+    }
+
+    void equipStaff()
+    {
+        for (int i = 0; i < staffObjects.Count; i++)
+        {
+            if (staffObjects[i] != null)
+                staffObjects[i].SetActive(i == spellListPos);
+        }
+    }
+
+    void selectStaff()
+    {
+        if (spellList.Count <= 1) return;
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0 && spellListPos < spellList.Count - 1)
+        {
+            spellListPos++;
+            equipStaff();
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0 && spellListPos > 0)
+        {
+            spellListPos--;
+            equipStaff();
         }
     }
 
@@ -167,18 +225,13 @@ public class playerController : MonoBehaviour, IDamage
         StartCoroutine(flashDamage());
 
         if (HP <= 0)
-        {
             gamemanager.instance.HandlePlayerDeath();
-        }
     }
 
     public void Heal(int amount)
     {
         HP += amount;
-
-        if (HP > HPOrig)
-            HP = HPOrig;
-
+        if (HP > HPOrig) HP = HPOrig;
         updatePlayerUI();
     }
 

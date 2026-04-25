@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ccf2d443854a534bb8cd06d1cee0c11, type: 3}
+  m_Name: ShockSpellStats
+  m_EditorClassIdentifier: Assembly-CSharp::SpellStats
+  spellName: 
+  spellType: 2
+  staffPrefab: {fileID: 5295425146424132663, guid: 1e312dad3f05cc64d892ec5541ab384b, type: 3}
+  projectilePrefab: {fileID: 8765478913902947266, guid: a9bb850d907caf644af747ac0a2f0db8, type: 3}
+  chainEffectPrefab: {fileID: 5752393926034024656, guid: 7d15cae4d2cf9aa4793909f9f062fd2f, type: 3}
+  damage: 6
+  castDist: 30
+  castRate: 0.5
+  projectileSpeed: 80
+  slowAmount: 0
+  slowDuration: 0
+  chainCount: 2
+  chainRadius: 4.1
+  chainDamageFalloff: 0.36
