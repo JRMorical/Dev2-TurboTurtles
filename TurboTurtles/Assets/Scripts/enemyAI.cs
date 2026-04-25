@@ -57,12 +57,19 @@ public class enemyAI : MonoBehaviour, IDamage
     Vector3 playerDir;
     Vector3 player;
 
+    // Slowed
+    bool isSlowed = false;
+    float originalSpeed;
+
     void Start()
     {
         colorOrig = model.material.color;
         gamemanager.instance.updateGameGoal(1);
         anim = GetComponent<enemyAnimator>();
         SetEnemyRole();
+
+        //og speed before slowed
+        originalSpeed = agent.speed;
     }
     void Update()
     {
@@ -261,5 +268,24 @@ public class enemyAI : MonoBehaviour, IDamage
         model.material.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         model.material.color = colorOrig;
+    }
+
+    public void ApplySlow(float amount, float duration)
+    {
+        if (isSlowed) return;
+        StartCoroutine(SlowRoutine(amount, duration));
+    }
+
+    IEnumerator SlowRoutine(float amount, float duration)
+    {
+        isSlowed = true;
+        agent.speed = originalSpeed * (1f - amount);
+        model.material.color = Color.cyan;
+
+        yield return new WaitForSeconds(duration);
+
+        agent.speed = originalSpeed;
+        model.material.color = colorOrig;
+        isSlowed = false;
     }
 }
