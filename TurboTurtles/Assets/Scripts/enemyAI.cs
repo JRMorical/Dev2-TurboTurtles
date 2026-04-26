@@ -1,4 +1,4 @@
-using UnityEngine;
+ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
@@ -32,7 +32,10 @@ public class enemyAI : MonoBehaviour, IDamage
     enemySpawner spawner;
     Color colorOrig;
 
-<<<<<<< HEAD
+    // Slowed
+    bool isSlowed = false;
+    float originalSpeed;
+
     void Awake()
     {
         behavior = enemyBehavior as IEnemyBehaviour;
@@ -41,31 +44,7 @@ public class enemyAI : MonoBehaviour, IDamage
             Debug.LogError("No IEnemyBehaviour found on " + gameObject.name);
         }
     }
-=======
-    [Header("Spawner")]
-    [SerializeField] GameObject meleePrefab;
-    [SerializeField] GameObject rangedPrefab;
-    [SerializeField] float spawnCooldown = 5f;
-    [SerializeField] float spawnRadius = 8f;
-    [SerializeField] int maxSpawned = 3;
-    int currentSpawned;
-    enemyAI spawner;
 
-    [Header("Attacking")]
-    AttackType currentType;
-    float spawnTimer;
-    bool isTravesingOffMeshLink;
-    float attackCooldown;
-
-    [Header("Player Position")]
-    Vector3 playerDir;
-    Vector3 player;
-
-    // Slowed
-    bool isSlowed = false;
-    float originalSpeed;
-
->>>>>>> dev
     void Start()
     {
         StartCalls();
@@ -81,7 +60,6 @@ public class enemyAI : MonoBehaviour, IDamage
     void UpdateCalls()
     {
         Player = gamemanager.instance.player.transform.position;
-        HandleNavJump();
         behavior?.Tick(this);
     }
     void StartCalls()
@@ -147,44 +125,6 @@ public class enemyAI : MonoBehaviour, IDamage
     public void PlayProjectileAttack()
     {
         anim.PlayProjectile();
-    }
-    void HandleNavJump()
-    {
-        if (isTravesingOffMeshLink) return;
-        if(agent.isOnOffMeshLink)
-        {
-            StartCoroutine(LinkJump());
-        }
-    }
-    IEnumerator LinkJump()
-    {
-        OffMeshLinkData data = agent.currentOffMeshLinkData;
-        
-        agent.isStopped = true;
-        agent.updateRotation = false;
-        isTravesingOffMeshLink = true;
-
-        Vector3 start = transform.position;
-        Vector3 end = data.endPos + Vector3.up * agent.baseOffset;
-
-        float time = 0f;
-        //float duration = 0.6f;
-        while(time < enemyLinkJumpSpeed)
-        {
-            float t = time / enemyLinkJumpSpeed;
-            float height = Mathf.Sin(t * Mathf.PI) * 2f;
-            transform.position = Vector3.Lerp(start, end, t) + Vector3.up * height;
-            time += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = end;
-
-        agent.Warp(end);
-        agent.isStopped = false;
-        agent.updateRotation = true;
-        agent.CompleteOffMeshLink();
-
-        isTravesingOffMeshLink = false;
     }
     public void takeDamage(int amount)
     {
