@@ -207,15 +207,27 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 8
+  _increaseRound: {fileID: 0}
   HP: 10
   speed: 5
+  jumpMax: 2
   sprintMod: 2
   jumpSpeed: 12
-  jumpMax: 2
   gravity: 35
   shootDamage: 1
   shootDist: 150
   shootRate: 0.5
+  damageReductionMultiplier: 1
+  handPoint: {fileID: 0}
+  postProcessVolume: {fileID: 0}
+  pulseThreshold: 0.4
+  pulseSpeedMin: 0.8
+  pulseSpeedMax: 3.5
+  pulseAmplitude: 0.18
+  intensityLowHP: 0.65
+  lerpSpeed: 4
+  HPOrig: 0
+  speedOrig: 0
 --- !u!143 &5535336554216155465
 CharacterController:
   m_ObjectHideFlags: 0

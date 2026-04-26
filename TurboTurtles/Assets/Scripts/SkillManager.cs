@@ -4,6 +4,8 @@ public class SkillManager : MonoBehaviour
 {
     public DamageBoostSkill damageBoost;
     public DamageReductionSkill damageReduction;
+    public HealOverTimeSkill healOverTime;
+    public ShieldSkill magicShield;
 
     public void UseDamageBoost()
     {
@@ -13,5 +15,15 @@ public class SkillManager : MonoBehaviour
     public void UseDamageReduction()
     {
         damageReduction.ActivateSkill();
+    }
+
+    public void UseHealOverTime()
+    {
+        healOverTime.ActivateSkill();
+    }
+
+    public void UseMagicShield()
+    {
+        magicShield.ActivateSkill();
     }
 }
