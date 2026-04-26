@@ -32,6 +32,7 @@ public class enemyAI : MonoBehaviour, IDamage
     enemySpawner spawner;
     Color colorOrig;
 
+<<<<<<< HEAD
     void Awake()
     {
         behavior = enemyBehavior as IEnemyBehaviour;
@@ -40,6 +41,31 @@ public class enemyAI : MonoBehaviour, IDamage
             Debug.LogError("No IEnemyBehaviour found on " + gameObject.name);
         }
     }
+=======
+    [Header("Spawner")]
+    [SerializeField] GameObject meleePrefab;
+    [SerializeField] GameObject rangedPrefab;
+    [SerializeField] float spawnCooldown = 5f;
+    [SerializeField] float spawnRadius = 8f;
+    [SerializeField] int maxSpawned = 3;
+    int currentSpawned;
+    enemyAI spawner;
+
+    [Header("Attacking")]
+    AttackType currentType;
+    float spawnTimer;
+    bool isTravesingOffMeshLink;
+    float attackCooldown;
+
+    [Header("Player Position")]
+    Vector3 playerDir;
+    Vector3 player;
+
+    // Slowed
+    bool isSlowed = false;
+    float originalSpeed;
+
+>>>>>>> dev
     void Start()
     {
         StartCalls();
@@ -64,6 +90,9 @@ public class enemyAI : MonoBehaviour, IDamage
         gamemanager.instance.updateGameGoal(1);
         anim = GetComponent<enemyAnimator>();
         SetEnemyRole();
+
+        //og speed before slowed
+        originalSpeed = agent.speed;
     }
 
     void SetEnemyRole()
@@ -183,5 +212,24 @@ public class enemyAI : MonoBehaviour, IDamage
         model.material.color = Color.red;
         yield return new WaitForSeconds(0.1f);
         model.material.color = colorOrig;
+    }
+
+    public void ApplySlow(float amount, float duration)
+    {
+        if (isSlowed) return;
+        StartCoroutine(SlowRoutine(amount, duration));
+    }
+
+    IEnumerator SlowRoutine(float amount, float duration)
+    {
+        isSlowed = true;
+        agent.speed = originalSpeed * (1f - amount);
+        model.material.color = Color.cyan;
+
+        yield return new WaitForSeconds(duration);
+
+        agent.speed = originalSpeed;
+        model.material.color = colorOrig;
+        isSlowed = false;
     }
 }

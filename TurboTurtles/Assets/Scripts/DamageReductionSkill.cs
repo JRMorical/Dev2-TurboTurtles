@@ -3,7 +3,6 @@ using System.Collections;
 
 public class DamageReductionSkill : BaseSkill
 {
-    public playerController player;
 
     public float reductionMultiplier = 0.5f;
 
@@ -20,14 +19,14 @@ public class DamageReductionSkill : BaseSkill
 
         isActive = true;
 
-        player.damageReductionMultiplier = reductionMultiplier;
+        StartCoroutine(CooldownEffect());
+
+        gamemanager.instance.player.GetComponent<playerController>().damageReductionMultiplier = reductionMultiplier;
 
         yield return new WaitForSeconds(duration);
 
-        player.damageReductionMultiplier = 1f;
+        gamemanager.instance.player.GetComponent<playerController>().damageReductionMultiplier = 1f;
 
         isActive = false;
-
-        StartCoroutine(CooldownEffect());
     }
 }
