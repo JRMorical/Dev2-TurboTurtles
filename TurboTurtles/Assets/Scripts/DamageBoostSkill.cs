@@ -4,7 +4,6 @@ using System.Collections;
 
 public class DamageBoostSkill : BaseSkill
 {
-    public playerController player;
     public int boostAmount = 10;
 
     public void ActivateSkill()
@@ -18,16 +17,16 @@ public class DamageBoostSkill : BaseSkill
     {
         Debug.Log("Damage Boost Activated");
 
-        isActive = true;
+        isActive = true; 
 
-        player.shootDamage += boostAmount;
+        StartCoroutine(CooldownEffect());
+
+        gamemanager.instance.player.GetComponent<playerController>().shootDamage += boostAmount;
 
         yield return new WaitForSeconds(duration);
 
-        player.shootDamage -= boostAmount;
+        gamemanager.instance.player.GetComponent<playerController>().shootDamage -= boostAmount;
 
-        isActive = false;
-
-        StartCoroutine(CooldownEffect());
+        isActive = false; 
     }
 }
