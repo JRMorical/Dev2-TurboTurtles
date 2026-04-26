@@ -33,7 +33,10 @@ public class enemySpawner : MonoBehaviour, IEnemyBehaviour
         GameObject enemy = Instantiate(prefabToSpawn, pos, transform.rotation);
         spawnTimer = 0;
         enemyAI ai = enemy.GetComponent<enemyAI>();
-        ai.SetSpawner(this);
+        if(ai != null)
+        {
+            ai.SetSpawner(this);
+        }     
     }
     public void SpawnDeath()
     {

@@ -8,6 +8,7 @@ public class enemyRanged : MonoBehaviour, IEnemyBehaviour
     [SerializeField] float shootRate = 1f;
     [SerializeField] Transform shootPos;
     float shootTimer;
+    
     void Start()
     {
         if(shootPos == null)

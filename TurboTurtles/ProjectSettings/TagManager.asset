@@ -7,7 +7,7 @@ TagManager:
   - Ranged
   - Spawner
   - Melee
-  - Attack
+  - Caster
   layers:
   - Default
   - TransparentFX
@@ -21,7 +21,7 @@ TagManager:
   - Spawner
   - Ranged
   - Melee
-  - 
+  - Caster
   - 
   - 
   - 

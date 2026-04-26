@@ -8,6 +8,7 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         MELEE_ONLY,
         RANGED_ONLY,
+        CASTER_ONLY,
         SPAWNER
     }
 
@@ -22,6 +23,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Renderer model;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] MonoBehaviour enemyBehavior;
+    [Range(0.2f, 1f)][SerializeField] float enemyLinkJumpSpeed = 0.6f;
     IEnemyBehaviour behavior;
     enemyAnimator anim;
     bool isTravesingOffMeshLink;
@@ -67,13 +69,21 @@ public class enemyAI : MonoBehaviour, IDamage
     void SetEnemyRole()
     {
         if (CompareTag("Melee"))
+        {
             role = EnemyRole.MELEE_ONLY;
-
+        }
         else if (CompareTag("Ranged"))
-            role = EnemyRole.RANGED_ONLY;
-
+        { 
+            role = EnemyRole.RANGED_ONLY; 
+        }
+        else if (CompareTag("Caster"))
+        {
+            role = EnemyRole.CASTER_ONLY;
+        }
         else if (CompareTag("Spawner"))
+        {
             role = EnemyRole.SPAWNER;
+        }          
     }
     public void Chase(Vector3 _target)
     {
@@ -129,10 +139,10 @@ public class enemyAI : MonoBehaviour, IDamage
         Vector3 end = data.endPos + Vector3.up * agent.baseOffset;
 
         float time = 0f;
-        float duration = 0.6f;
-        while(time < duration)
+        //float duration = 0.6f;
+        while(time < enemyLinkJumpSpeed)
         {
-            float t = time / duration;
+            float t = time / enemyLinkJumpSpeed;
             float height = Mathf.Sin(t * Mathf.PI) * 2f;
             transform.position = Vector3.Lerp(start, end, t) + Vector3.up * height;
             time += Time.deltaTime;
