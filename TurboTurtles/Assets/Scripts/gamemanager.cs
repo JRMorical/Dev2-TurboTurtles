@@ -243,25 +243,44 @@ public class gamemanager : MonoBehaviour
 
     public void HandlePlayerDeath()
     {
+        youLose();
+    }
+
+    public void RespawnAtCheckpoint()
+    {
         StartCoroutine(RespawnRoutine());
     }
 
     IEnumerator RespawnRoutine()
     {
-        statePause();
-
-        yield return new WaitForSecondsRealtime(1.5f);
-
         if (activeWaveArea != null)
             activeWaveArea.ResetArea();
 
-        player.transform.position = currentCheckpoint.position;
-        player.transform.rotation = currentCheckpoint.rotation;
+        if(currentCheckpoint != null)
+        {
+            CharacterController controller = player.GetComponent<CharacterController>();
+
+            if (controller != null)
+                controller.enabled = false;
+
+            player.transform.position = currentCheckpoint.position;
+            player.transform.rotation = currentCheckpoint.rotation;
+
+            if (controller != null)
+                controller.enabled = true;
+        }
+        else
+        {
+            Debug.LogWarning("No checkpoint assigned. Player cannot respawn at checkpoint.");
+        }
+
 
         playerScript.HP = playerScript.HPOrig;
         playerScript.updatePlayerUI();
 
         stateUnpause();
+
+        yield return null;
 
         if (activeWaveArea != null)
             activeWaveArea.StartArea();

@@ -26,7 +26,8 @@ public class EnemyWaveManager : MonoBehaviour
 
     [Header("Area Settings")]
     [SerializeField] Transform respawnPoint;
-    [SerializeField] GameObject bridgeToLower;
+    [SerializeField] GameObject bridgeToOpen;
+    [SerializeField] GameObject bridgeToClose;
     [SerializeField] float completeDelay = 3f;
     [SerializeField] EnemyWaveManager nextArea;
     [SerializeField] bool startOnTrigger = true;
@@ -66,6 +67,9 @@ public class EnemyWaveManager : MonoBehaviour
         gamemanager.instance.SetActiveWaveArea(this);
         gamemanager.instance.ShowWaveUI(true);
         gamemanager.instance.SetGameGoalCount(0);
+
+        if (bridgeToClose != null)
+            bridgeToClose.GetComponent<DrawBridgeController>()?.CloseBridge();
 
         waveRoutine = StartCoroutine(WaveLoop());
     }
@@ -146,8 +150,8 @@ public class EnemyWaveManager : MonoBehaviour
 
         yield return new WaitForSeconds(completeDelay);
 
-        if (bridgeToLower != null)
-            bridgeToLower.GetComponent<DrawBridgeController>()?.LowerBridge();
+        if (bridgeToOpen != null)
+            bridgeToOpen.GetComponent<DrawBridgeController>()?.LowerBridge();
 
         gamemanager.instance.ShowWaveUI(false);
 

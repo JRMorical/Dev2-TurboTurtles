@@ -328,11 +328,11 @@ RectTransform:
   - {fileID: 7909672368839698529}
   - {fileID: 5442679550447981217}
   - {fileID: 6747395294016132573}
+  - {fileID: 2816522515370866906}
   - {fileID: 1476197633846751312}
   - {fileID: 4105245273964965298}
   - {fileID: 19461752251264085}
   - {fileID: 6887631189466027108}
-  - {fileID: 2816522515370866906}
   - {fileID: 2432974325479423092}
   - {fileID: 3189461404564516702}
   - {fileID: 8159025597083662885}
@@ -563,7 +563,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3302099554858558393
 RectTransform:
   m_ObjectHideFlags: 0
@@ -668,7 +668,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7655469008391285463}
         m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
-        m_MethodName: resume
+        m_MethodName: respawn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
