@@ -24,10 +24,18 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Caster
       objectReference: {fileID: 0}
+    - target: {fileID: 2231934648368799502, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: m_Speed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: role
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: enemyBehavior
+      value: 
+      objectReference: {fileID: 5900072410670583718}
     - target: {fileID: 6158815522623721085, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -100,7 +108,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 721387cc66a09174e82f4af535331c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemyCaster
-  AOE_portal: {fileID: 0}
-  portalCooldown: 5
-  stoppingDistance: 8
-  damageEffect: {fileID: 0}
+  AOE_portal: {fileID: 4886587756937872490, guid: 263d6b8b279c10f41b2895f9a0435f55, type: 3}
+  portalCooldown: 2
+  stoppingDistance: 15
+  damageEffect: {fileID: 2799298326678124480, guid: a9fab2bdef2f9ba4a9df146cd43640e8, type: 3}
+  maxSpawned: 1

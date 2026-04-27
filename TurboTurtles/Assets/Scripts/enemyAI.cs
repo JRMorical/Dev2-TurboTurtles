@@ -44,7 +44,6 @@ public class enemyAI : MonoBehaviour, IDamage
             Debug.LogError("No IEnemyBehaviour found on " + gameObject.name);
         }
     }
-
     void Start()
     {
         StartCalls();
@@ -72,7 +71,6 @@ public class enemyAI : MonoBehaviour, IDamage
         //og speed before slowed
         originalSpeed = agent.speed;
     }
-
     void SetEnemyRole()
     {
         if (CompareTag("Melee"))
@@ -109,6 +107,10 @@ public class enemyAI : MonoBehaviour, IDamage
     public void MoveStop()
     {
         agent.isStopped = true;
+    }
+    public void SetStoppingDistance(float _dist)
+    {
+        agent.stoppingDistance = _dist;
     }
     public void rotateToPlayer()
     {

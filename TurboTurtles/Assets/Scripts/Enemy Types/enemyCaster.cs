@@ -1,77 +1,136 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class enemyCaster : MonoBehaviour, IEnemyBehaviour
 {
     [Header("-----Caster Stats-----")]
     [SerializeField] GameObject AOE_portal;
-    [Range(5f, 8f)][SerializeField] float portalCooldown = 5f;
+    [Range(2f, 8f)][SerializeField] float portalCooldown = 5f;
     [Range(8, 15)][SerializeField] int stoppingDistance = 8;
     [SerializeField] ParticleSystem damageEffect;
-    CharacterController playerController;
+    [Range(1, 3)][SerializeField] int maxSpawned = 1;
+    CharacterController controller;
+
+    bool wasFirstSpawned;
+    bool spawning;
     int spawned;
     float portalTimer;
-    float portalUpTime = 5f;
+    float spawnDelayCooldown = 1f;
+    float spawnDelayTimer;
     float portalTimeEnd = 5f;
+    Vector3 lockedPosition;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        playerController = gamemanager.instance.player.GetComponent<CharacterController>();
-        if(playerController == null)
+        controller = gamemanager.instance.player.GetComponent<CharacterController>();
+  
+        if (controller == null)
         {
-            Debug.Log("PLAYER CONTROLLER IS NULL");
+            Debug.Log("CHARACTER CONTROLLER IS NULL");
         }
-        if(AOE_portal == null)
+        if (AOE_portal == null)
         {
             Debug.Log("PORTAL OBJECT HAS NOT BEEN SET");
         }
+
     }
-    // Update is called once per frame
-    void Update()
+    void HandleSpawns()
     {
-        
-    }
-    void SpawnPortal(enemyAI _ai)
-    {
-        if (playerController == null) return;
-        if (spawned == 0)
+        if (spawned >= maxSpawned) return;
+
+        if (!spawning)
         {
-            _ai.MoveStop();
-            Vector3 playersFeet = playerController.transform.position - Vector3.up * (playerController.height/2f);
+            portalTimer += Time.deltaTime;
 
-            GameObject AOE_instance = Instantiate(AOE_portal, playersFeet, Quaternion.identity);
-            if (AOE_instance == null) return;
-            BoxCollider col = AOE_portal.GetComponent<BoxCollider>();
-            if (col == null) return;
-            if(col.isTrigger)
+            if (portalTimer >= portalCooldown)
             {
-                ParticleSystem effects = Instantiate(damageEffect, AOE_instance.transform.position, Quaternion.identity);
-                ++spawned;
+                spawning = true;
+                spawned = 0;
+                spawnDelayTimer = 0;
+            }
+        }
+        else
+        {
+            spawnDelayTimer += Time.deltaTime;
 
-                Destroy(AOE_instance, portalTimeEnd);
-                if(effects != null)
+            if (spawnDelayTimer >= spawnDelayCooldown)
+            {
+                if (controller.isGrounded)
                 {
-                    Destroy(effects, portalTimeEnd);
+                    lockedPosition = controller.transform.position - Vector3.up * ((controller.height / 2f) + 0.07f);
+                    StartCoroutine(SpawnLocationDelay(lockedPosition));
+                    spawnDelayTimer = 0;
                 }
-                --spawned;
 
-                portalTimer = 0;
+                if (spawned >= maxSpawned)
+                {
+                    spawning = false;
+                    portalTimer = 0;
+                }
             }
         }
     }
-    public void Tick(enemyAI _ai)
-    { 
-        portalTimer += Time.deltaTime;
-        float dist = _ai.PlayerDistance(); ;
+
+    void TrySpawnPortal(enemyAI _ai)
+    {
+        if (controller == null) return;
+
+        _ai.SetStoppingDistance(stoppingDistance);
+
+        float dist = _ai.PlayerDistance();
+
         if (dist > stoppingDistance)
         {
             _ai.Chase(_ai.player);
             return;
         }
-        if (portalTimer >= portalCooldown)
-        {
-            SpawnPortal(_ai);
-        }
 
+        _ai.Chase(_ai.player);
+
+        if (wasFirstSpawned)
+        {
+            HandleSpawns();
+        }
+        else
+        {
+            lockedPosition = controller.transform.position - Vector3.up * ((controller.height / 2f) + 0.07f);
+            StartCoroutine(SpawnLocationDelay(lockedPosition));
+            spawning = true;
+            wasFirstSpawned = true;
+        }
+    }
+    void SpawnPortal(Vector3 _pos)
+    {
+        spawned++;
+
+        GameObject AOE_instance = Instantiate(AOE_portal, _pos, Quaternion.identity);
+
+        PortalLifetime portal = AOE_instance.GetComponent<PortalLifetime>();
+        if (portal != null)
+        {
+            portal.owner = this;
+        }
+        ParticleSystem effects = Instantiate(damageEffect, AOE_instance.transform.position, Quaternion.identity);
+    
+        Destroy(AOE_instance, portalTimeEnd);
+
+        if (effects != null)
+        {
+            Destroy(effects, portalTimeEnd);
+        }
+    }
+    IEnumerator SpawnLocationDelay(Vector3 _loc)
+    {
+        yield return new WaitForSeconds(0.5f);
+        SpawnPortal(_loc);
+    }
+    public void DecrementCount()
+    {
+        spawned = Mathf.Max(0, spawned - 1);
+    }
+    public void Tick(enemyAI _ai)
+    {
+        TrySpawnPortal(_ai);
     }
 }
