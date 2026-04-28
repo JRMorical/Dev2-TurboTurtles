@@ -10,6 +10,7 @@ public class enemySpawner : MonoBehaviour, IEnemyBehaviour
     [SerializeField] int maxSpawned = 3;
     [SerializeField] float spawnRangeMax = 4f;
     [SerializeField] float spawnRangeMin = -4f;
+    [Range(13, 25)][SerializeField] float stoppingDistance = 13;
     int currentSpawned;
     float spawnTimer;
 
@@ -48,6 +49,13 @@ public class enemySpawner : MonoBehaviour, IEnemyBehaviour
     }
     public void Tick(enemyAI _ai)
     {
+        _ai.SetStoppingDistance(stoppingDistance);
+        float dist = _ai.PlayerDistance();
+        if(dist > stoppingDistance)
+        {
+            _ai.Chase(_ai.player);
+        }
+        _ai.rotateToPlayer();
         spawnTimer += Time.deltaTime;
         if (currentSpawned >= maxSpawned) return;
         if (spawnTimer >= spawnCooldown) TrySpawn();

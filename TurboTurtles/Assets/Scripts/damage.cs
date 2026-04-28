@@ -26,7 +26,8 @@ public class damage : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger || other.CompareTag("Ranged") || other.CompareTag("Melee") || other.CompareTag("Spawner") || other.CompareTag("Caster"))
+        if (other.isTrigger || other.CompareTag("Ranged") || other.CompareTag("Melee") || other.CompareTag("Spawner")
+            || other.CompareTag("Caster") || other.CompareTag("Charger"))
             return;
 
         IDamage dmg = other.GetComponent<IDamage>();

@@ -167,6 +167,7 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 8697784469292559806, guid: 85fd8759aa39a1d40baa5c1448fe8197, type: 3}
   - {fileID: 8752032220630977854, guid: d71c2a5b6d890604da4c9d33dec593e3, type: 3}
+  - {fileID: 1605193855063047792, guid: 77f69234106215f40841419749d447a4, type: 3}
   spawnCooldown: 5
   spawnRadius: 8
   maxSpawned: 3

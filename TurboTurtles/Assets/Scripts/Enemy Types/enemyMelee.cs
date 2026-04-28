@@ -8,6 +8,7 @@ public class enemyMelee : MonoBehaviour, IEnemyBehaviour
 
     public void Tick(enemyAI _ai)
     {
+        _ai.SetStoppingDistance(range);
         float dist = _ai.PlayerDistance(); ;
         if(dist > range)
         {

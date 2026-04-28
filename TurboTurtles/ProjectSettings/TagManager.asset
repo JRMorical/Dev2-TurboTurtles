@@ -8,6 +8,7 @@ TagManager:
   - Spawner
   - Melee
   - Caster
+  - Charger
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - Ranged
   - Melee
   - Caster
-  - 
+  - Charger
   - 
   - 
   - 

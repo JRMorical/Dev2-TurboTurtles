@@ -9,6 +9,7 @@ public class enemyAI : MonoBehaviour, IDamage
         MELEE_ONLY,
         RANGED_ONLY,
         CASTER_ONLY,
+        CHARGER,
         SPAWNER
     }
 
@@ -59,6 +60,7 @@ public class enemyAI : MonoBehaviour, IDamage
     void UpdateCalls()
     {
         Player = gamemanager.instance.player.transform.position;
+        HandleNavJump();
         behavior?.Tick(this);
     }
     void StartCalls()
@@ -88,7 +90,11 @@ public class enemyAI : MonoBehaviour, IDamage
         else if (CompareTag("Spawner"))
         {
             role = EnemyRole.SPAWNER;
-        }          
+        }
+        else if (CompareTag("Charger"))
+        {
+            role = EnemyRole.CHARGER;
+        }
     }
     public void Chase(Vector3 _target)
     {
@@ -124,6 +130,11 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         anim.PlayAttack();
     }
+    public void PlayChargeAttack()
+    {
+        anim.PlayChargeAttack();
+        Debug.Log("Play anim");
+    }
     public void PlayProjectileAttack()
     {
         anim.PlayProjectile();
@@ -148,6 +159,44 @@ public class enemyAI : MonoBehaviour, IDamage
         {
             StartCoroutine(FlashRed());
         }
+    }
+    void HandleNavJump()
+    {
+        if (isTravesingOffMeshLink) return;
+        if (agent.isOnOffMeshLink)
+        {
+            StartCoroutine(LinkJump());
+        }
+    }
+    IEnumerator LinkJump()
+    {
+        OffMeshLinkData data = agent.currentOffMeshLinkData;
+
+        agent.isStopped = true;
+        agent.updateRotation = false;
+        isTravesingOffMeshLink = true;
+
+        Vector3 start = transform.position;
+        Vector3 end = data.endPos + Vector3.up * agent.baseOffset;
+
+        float time = 0f;
+        float duration = 0.6f;
+        while (time < duration)
+        {
+            float t = time / duration;
+            float height = Mathf.Sin(t * Mathf.PI) * 2f;
+            transform.position = Vector3.Lerp(start, end, t) + Vector3.up * height;
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = end;
+
+        agent.CompleteOffMeshLink();
+        agent.Warp(end);
+        agent.isStopped = false;
+        agent.updateRotation = true;
+
+        isTravesingOffMeshLink = false;
     }
     IEnumerator FlashRed()
     {

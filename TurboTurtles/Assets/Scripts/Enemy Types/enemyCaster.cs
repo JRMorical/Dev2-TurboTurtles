@@ -94,6 +94,7 @@ public class enemyCaster : MonoBehaviour, IEnemyBehaviour
         }
         else
         {
+            if (!controller.isGrounded) return;
             lockedPosition = controller.transform.position - Vector3.up * ((controller.height / 2f) + 0.07f);
             StartCoroutine(SpawnLocationDelay(lockedPosition));
             spawning = true;
