@@ -4320,7 +4320,7 @@ MonoBehaviour:
   exp: 0
   level: 1
   points: 0
-  isPaused: 0
+  isPaused: 1
   player: {fileID: 0}
   playerScript: {fileID: 0}
 --- !u!1001 &5910038406355218549
