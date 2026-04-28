@@ -11,7 +11,6 @@ public class SpellProjectile : MonoBehaviour
     float slowDuration;
     Vector3 dir;
     bool hasHit = false;
-    float spawnTimer = 0f;
 
     public void Init(Vector3 target, int dmg, float spd, float slow, float slowDur)
     {
@@ -19,9 +18,13 @@ public class SpellProjectile : MonoBehaviour
         speed = spd;
         slowAmount = slow;
         slowDuration = slowDur;
-        dir = (target - transform.position).normalized;
 
-        GetComponent<Rigidbody>().linearVelocity = dir * speed;
+        Vector3 adjustedTarget = new Vector3(target.x, target.y + 1f, target.z);
+        dir = (adjustedTarget - transform.position).normalized;
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+            rb.isKinematic = true;
 
         if (trailEffect != null)
             trailEffect.Play();
@@ -34,42 +37,18 @@ public class SpellProjectile : MonoBehaviour
     {
         if (hasHit) return;
 
-        spawnTimer += Time.deltaTime;
-        if (spawnTimer < 0.2f) return;
+        transform.position += dir * speed * Time.deltaTime;
 
-        // Raycast ahead
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, dir, out hit, speed * Time.deltaTime * 6f))
+        if (Physics.SphereCast(transform.position, 0.2f, dir, out hit, speed * Time.deltaTime * 3f))
         {
-            if (!hit.collider.CompareTag("Player") && hit.collider.gameObject != gameObject)
-            {
-                HitTarget(hit.collider);
-                return;
-            }
-        }
-
-        // OverlapSphere as backup
-        Collider[] hits = Physics.OverlapSphere(transform.position, 0.3f);
-        foreach (Collider col in hits)
-        {
-            if (col.CompareTag("Player")) continue;
-            if (col.gameObject == gameObject) continue;
-
-            HitTarget(col);
-            return;
+            if (hit.collider.CompareTag("Player")) return;
+            if (hit.collider.gameObject == gameObject) return;
+            HitTarget(hit.collider, hit.point);
         }
     }
 
-    void OnCollisionEnter(Collision col)
-    {
-        if (hasHit) return;
-        if (spawnTimer < 0.2f) return;
-        if (col.collider.CompareTag("Player")) return;
-
-        HitTarget(col.collider);
-    }
-
-    void HitTarget(Collider col)
+    void HitTarget(Collider col, Vector3 hitPoint)
     {
         if (hasHit) return;
         hasHit = true;
@@ -90,7 +69,7 @@ public class SpellProjectile : MonoBehaviour
 
         if (explosionEffect != null)
         {
-            ParticleSystem explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            ParticleSystem explosion = Instantiate(explosionEffect, hitPoint, Quaternion.identity);
             explosion.Play();
             Destroy(explosion.gameObject, explosion.main.duration + 2f);
         }
