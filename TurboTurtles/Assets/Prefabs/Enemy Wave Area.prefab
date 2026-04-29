@@ -60,7 +60,8 @@ MonoBehaviour:
   startDelay: 3
   maxWaves: 2
   respawnPoint: {fileID: 0}
-  bridgeToLower: {fileID: 0}
+  bridgeToOpen: {fileID: 0}
+  bridgeToClose: {fileID: 0}
   completeDelay: 3
   nextArea: {fileID: 0}
   startOnTrigger: 0

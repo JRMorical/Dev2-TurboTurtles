@@ -176,7 +176,7 @@ public class playerController : MonoBehaviour, IDamage
         {
             case SpellType.Fire:
             case SpellType.Ice:
-                Vector3 spawnPos = handPoint.position;
+                Vector3 spawnPos = handPoint.position + Vector3.up * 1.1f;
                 Vector3 targetPoint = spawnPos + Camera.main.transform.forward * current.castDist;
                 GameObject proj = Instantiate(current.projectilePrefab, spawnPos, Quaternion.identity);
                 SpellProjectile sp = proj.GetComponent<SpellProjectile>();
