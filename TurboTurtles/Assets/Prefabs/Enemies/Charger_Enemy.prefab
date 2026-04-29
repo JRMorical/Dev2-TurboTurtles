@@ -16,6 +16,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Arm
       objectReference: {fileID: 0}
+    - target: {fileID: 347727316524372124, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 347727316524372124, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 715590323705576636, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Name
       value: Charger_Enemy
@@ -34,15 +42,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Height
-      value: 2.6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Radius
-      value: 0.92
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_Center.y
-      value: -0.27
+      value: -0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: m_IsTrigger
@@ -176,6 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6983fbee894ca6a4ca0c7d4f339877c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemyCharger
+  armBox: {fileID: 6841948976498761754}
 --- !u!114 &8394753740766304973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,7 +240,12 @@ MonoBehaviour:
   type: 1
   rb: {fileID: 0}
   damageAmount: 1
-  damageRate: 1
+  damageRate: 0.1
   bulletSpeed: 0
   bulletDestroyTime: 0
   hitEffect: {fileID: 0}
+--- !u!136 &6841948976498761754 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 1310132230319093918, guid: cae03782b8988d141962f09292198154, type: 3}
+  m_PrefabInstance: {fileID: 5538858039731017860}
+  m_PrefabAsset: {fileID: 0}

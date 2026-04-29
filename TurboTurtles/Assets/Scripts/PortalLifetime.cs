@@ -3,25 +3,28 @@ using UnityEngine;
 public class PortalLifetime : MonoBehaviour
 {
     public enemyCaster owner;
-    playerController playerController;
+    playerController pc;
     int playerOrigSpeed;
+    bool playerInside;
 
     void Start()
     {
-        playerController = gamemanager.instance.player.GetComponent<playerController>();
-        if(playerController != null)
+        pc = gamemanager.instance.player.GetComponent<playerController>();
+        if(pc != null)
         {
-            playerOrigSpeed = playerController.speed;
+            playerOrigSpeed = pc.speed;
         }
     }
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player"))
         {
-            playerController pc = other.GetComponent<playerController>();
-            if (pc != null)
+            pc = other.GetComponent<playerController>();
+            if (pc == null) return;
+            if(!playerInside)
             {
-                pc.speed = 1;
+                pc.speed /= 2;
+                playerInside = true;
             }
         }
     }
@@ -29,18 +32,22 @@ public class PortalLifetime : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            playerController pc = other.GetComponent<playerController>();
-            if (pc != null)
-            {
-                pc.speed = playerOrigSpeed;
-            }
+            pc = other.GetComponent<playerController>();
+            if (pc == null) return;
+            pc.speed = playerOrigSpeed;
+            playerInside = false;
         }
     }
     void OnDestroy()
     {
+        if(pc != null && playerInside)
+        {
+            pc.speed = playerOrigSpeed;
+        }
+
         if(owner != null)
         {
-            owner.DecrementCount();
+            owner.DecrementCount();    
         }
     }
 }

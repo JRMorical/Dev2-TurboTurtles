@@ -24,13 +24,15 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Renderer model;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] MonoBehaviour enemyBehavior;
+    [SerializeField] GameObject dropPickup;
+    [Range(0f, 1f)][SerializeField] float dropRate = 0.2f;
     [Range(0.2f, 1f)][SerializeField] float enemyLinkJumpSpeed = 0.6f;
+    bool isTravesingOffMeshLink;
     IEnemyBehaviour behavior;
     enemyAnimator anim;
-    bool isTravesingOffMeshLink;
+    enemySpawner spawner;
     Vector3 Player;
     public Vector3 player => Player;
-    enemySpawner spawner;
     Color colorOrig;
 
     // Slowed
@@ -65,6 +67,10 @@ public class enemyAI : MonoBehaviour, IDamage
     }
     void StartCalls()
     {
+        if (model == null) Debug.Log("RENDERER IS NULL");
+        if (agent == null) Debug.Log("NAV MESH AGENT IS NULL");
+        if (dropPickup == null) Debug.Log("DROP PICKUP OBJECT IS NULL");
+
         colorOrig = model.material.color;
         gamemanager.instance.updateGameGoal(1);
         anim = GetComponent<enemyAnimator>();
@@ -94,6 +100,22 @@ public class enemyAI : MonoBehaviour, IDamage
         else if (CompareTag("Charger"))
         {
             role = EnemyRole.CHARGER;
+        }
+    }
+    void HandleNavJump()
+    {
+        if (isTravesingOffMeshLink) return;
+        if (agent.isOnOffMeshLink)
+        {
+            StartCoroutine(LinkJump());
+        }
+    }
+    void HandleDeath()
+    {
+        Destroy(gameObject);
+        if(Random.Range(0f, 1f) <= dropRate)
+        {
+            Instantiate(dropPickup, transform.position, Quaternion.identity);
         }
     }
     public void Chase(Vector3 _target)
@@ -130,11 +152,6 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         anim.PlayAttack();
     }
-    public void PlayChargeAttack()
-    {
-        anim.PlayChargeAttack();
-        Debug.Log("Play anim");
-    }
     public void PlayProjectileAttack()
     {
         anim.PlayProjectile();
@@ -153,20 +170,17 @@ public class enemyAI : MonoBehaviour, IDamage
             gamemanager.instance.updateGameGoal(-1);
             gamemanager.instance.AddScore();
             gamemanager.instance.exp++;
-            Destroy(gameObject);
+            HandleDeath();
         }
         else
         {
             StartCoroutine(FlashRed());
         }
     }
-    void HandleNavJump()
+    public void ApplySlow(float amount, float duration)
     {
-        if (isTravesingOffMeshLink) return;
-        if (agent.isOnOffMeshLink)
-        {
-            StartCoroutine(LinkJump());
-        }
+        if (isSlowed) return;
+        StartCoroutine(SlowRoutine(amount, duration));
     }
     IEnumerator LinkJump()
     {
@@ -180,10 +194,10 @@ public class enemyAI : MonoBehaviour, IDamage
         Vector3 end = data.endPos + Vector3.up * agent.baseOffset;
 
         float time = 0f;
-        float duration = 0.6f;
-        while (time < duration)
+
+        while (time < enemyLinkJumpSpeed)
         {
-            float t = time / duration;
+            float t = time / enemyLinkJumpSpeed;
             float height = Mathf.Sin(t * Mathf.PI) * 2f;
             transform.position = Vector3.Lerp(start, end, t) + Vector3.up * height;
             time += Time.deltaTime;
@@ -192,9 +206,9 @@ public class enemyAI : MonoBehaviour, IDamage
         transform.position = end;
 
         agent.CompleteOffMeshLink();
+        agent.updateRotation = true;
         agent.Warp(end);
         agent.isStopped = false;
-        agent.updateRotation = true;
 
         isTravesingOffMeshLink = false;
     }
@@ -204,13 +218,6 @@ public class enemyAI : MonoBehaviour, IDamage
         yield return new WaitForSeconds(0.1f);
         model.material.color = colorOrig;
     }
-
-    public void ApplySlow(float amount, float duration)
-    {
-        if (isSlowed) return;
-        StartCoroutine(SlowRoutine(amount, duration));
-    }
-
     IEnumerator SlowRoutine(float amount, float duration)
     {
         isSlowed = true;

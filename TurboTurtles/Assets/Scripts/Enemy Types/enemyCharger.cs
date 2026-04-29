@@ -11,6 +11,7 @@ public class enemyCharger : MonoBehaviour, IEnemyBehaviour
     }
 
     [Header("-----Charger Stats-----")]
+    [SerializeField] Collider armBox;
     AttackState state;
 
     Vector3 chargeDirection;
@@ -27,8 +28,11 @@ public class enemyCharger : MonoBehaviour, IEnemyBehaviour
 
     bool canCharge = true;
     bool isHitting;
-
-
+    
+    void Start()
+    {
+        armBox.enabled = false;
+    }
     public void Tick(enemyAI _ai)
     {
         switch (state)
@@ -69,6 +73,27 @@ public class enemyCharger : MonoBehaviour, IEnemyBehaviour
 
         chargeTime = 0;
         state = AttackState.CHARGING;
+        EnableHitBox();
+    }
+    IEnumerator HitDuringCharge(enemyAI _ai)
+    {
+        isHitting = true;
+        _ai.rotateToPlayer();
+        //EnableHitBox();
+        _ai.PlayMeleeAttack();
+
+        yield return new WaitForSeconds(0.4f); 
+
+        isHitting = false;
+        DisableHitBox();
+    }
+    void EnableHitBox()
+    {
+        armBox.enabled = true;
+    }
+    void DisableHitBox()
+    {
+        armBox.enabled = false;
     }
     void UpdateCharge(enemyAI _ai)
     {
@@ -85,16 +110,6 @@ public class enemyCharger : MonoBehaviour, IEnemyBehaviour
         {
             EndCharge();
         }
-    }
-    IEnumerator HitDuringCharge(enemyAI _ai)
-    {
-        isHitting = true;
-
-        _ai.PlayMeleeAttack();
-
-        yield return new WaitForSeconds(0.4f); 
-
-        isHitting = false;
     }
     void EndCharge()
     {

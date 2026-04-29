@@ -108,8 +108,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 721387cc66a09174e82f4af535331c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemyCaster
-  AOE_portal: {fileID: 4886587756937872490, guid: 263d6b8b279c10f41b2895f9a0435f55, type: 3}
-  portalCooldown: 2
+  AOE_portal: {fileID: -1725792265227528554, guid: 263d6b8b279c10f41b2895f9a0435f55, type: 3}
+  portalCooldown: 5
   stoppingDistance: 15
-  damageEffect: {fileID: 2799298326678124480, guid: a9fab2bdef2f9ba4a9df146cd43640e8, type: 3}
+  blizzardPrefab: {fileID: -7701928646926280168, guid: d7ca4d6b991b17049bb29b946a770ff6, type: 3}
   maxSpawned: 1
+  abilityCooldown: 3

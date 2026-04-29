@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class damage : MonoBehaviour
 {
@@ -8,13 +9,26 @@ public class damage : MonoBehaviour
     [SerializeField] Rigidbody rb;
 
     [SerializeField] int damageAmount;
+    int DamageAmount => damageAmount;
     [SerializeField] float damageRate;
     [SerializeField] int bulletSpeed;
     [SerializeField] int bulletDestroyTime;
     [SerializeField] ParticleSystem hitEffect;
 
     bool isDamaging;
+    bool hasHit;
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Vector3 testPos = transform.position + transform.forward * 5f;
+            testPos = new Vector3(testPos.x, 0f, testPos.z);
 
+            Instantiate(hitEffect, testPos, Quaternion.identity);
+
+            Debug.Log("Test FX spawned at: " + testPos);
+        }
+    }
     void Start()
     {
         if (type == damageType.bullet)
@@ -23,7 +37,32 @@ public class damage : MonoBehaviour
             Destroy(gameObject, bulletDestroyTime);
         }
     }
+    void OnParticleCollision(GameObject other)
+    {
+        if (type != damageType.stationary) return;
+       // if (hasHit) return;
 
+        hasHit = true;
+
+        IDamage dmg = other.GetComponentInParent<IDamage>();
+        if (dmg != null)
+        {
+            dmg.takeDamage(damageAmount);
+            gamemanager.instance.OnSuccessfulHit?.Invoke(other, gameObject);
+        }
+
+    }
+    public void DealDamage(GameObject target)
+    {
+        if (target == null) return;
+
+        IDamage dmg = target.GetComponent<IDamage>();
+        if (dmg != null)
+        {
+            dmg.takeDamage(damageAmount);
+            gamemanager.instance.OnSuccessfulHit?.Invoke(target, gameObject);
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.isTrigger || other.CompareTag("Ranged") || other.CompareTag("Melee") || other.CompareTag("Spawner")

@@ -18,10 +18,6 @@ public class enemyAnimator : MonoBehaviour
     {
         animator.SetTrigger(ATTACK);
     }
-    public void PlayChargeAttack()
-    {
-        animator.SetTrigger(CHARGE_ATTACK);
-    }
     public void PlayProjectile()
     {
         animator.SetTrigger(PROJECTILE);
