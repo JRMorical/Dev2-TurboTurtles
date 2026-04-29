@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 7496531805541431280}
   - component: {fileID: 721893989399244794}
   - component: {fileID: 1420657898047753253}
+  - component: {fileID: 8105945594697758632}
+  - component: {fileID: 2682117926709840595}
   m_Layer: 0
   m_Name: skillManager
   m_TagString: Untagged
@@ -48,6 +50,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillManager
   damageBoost: {fileID: 721893989399244794}
   damageReduction: {fileID: 1420657898047753253}
+  healOverTime: {fileID: 0}
+  magicShield: {fileID: 0}
 --- !u!114 &721893989399244794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,8 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageBoostSkill
   duration: 15
-  cooldown: 30
-  player: {fileID: 2081020567211513948, guid: cc57e94415f3c574190c76f87e45b355, type: 3}
+  cooldown: 45
   boostAmount: 10
 --- !u!114 &1420657898047753253
 MonoBehaviour:
@@ -77,6 +80,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageReductionSkill
   duration: 15
-  cooldown: 30
-  player: {fileID: 2081020567211513948, guid: cc57e94415f3c574190c76f87e45b355, type: 3}
+  cooldown: 45
   reductionMultiplier: 0.5
+--- !u!114 &8105945594697758632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456343468790353498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1764e413e8536c446b453395a871e222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealOverTimeSkill
+  duration: 15
+  cooldown: 45
+--- !u!114 &2682117926709840595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456343468790353498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f306620ca6acd0644a5b02f42641b08a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShieldSkill
+  duration: 15
+  cooldown: 45
+  damageReductionMultiplier: 0
+  shieldPrefab: {fileID: 5789129352786553782, guid: 533d9308ee62c5644ae99d543bfe48e7, type: 3}

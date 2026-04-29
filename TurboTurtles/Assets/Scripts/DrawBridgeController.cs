@@ -7,19 +7,34 @@ public class DrawBridgeController : MonoBehaviour
     [SerializeField] Vector3 openRotation;
     [SerializeField] float rotateSpeed = 60f;
 
-    bool isOpening = false;
+    Coroutine rotateRoutine;
+
+    void Start()
+    {
+        transform.rotation = Quaternion.Euler(closedRotation);
+    }
 
     public void LowerBridge()
     {
-        if (!isOpening)
-            StartCoroutine(LowerRoutine());
+        RotateTo(openRotation);
     }
 
-    IEnumerator LowerRoutine()
+    public void CloseBridge()
     {
-        isOpening = true;
+        RotateTo(closedRotation);
+    }
 
-        Quaternion targetRot = Quaternion.Euler(openRotation);
+    void RotateTo(Vector3 targetEuler)
+    {
+        if (rotateRoutine != null)
+            StopCoroutine(rotateRoutine);
+
+        rotateRoutine = StartCoroutine(RotateRoutine(targetEuler));
+    }
+
+    IEnumerator RotateRoutine(Vector3 targetEuler)
+    {
+        Quaternion targetRot = Quaternion.Euler(targetEuler);
 
         while (Quaternion.Angle(transform.rotation, targetRot) > 0.5f)
         {
@@ -29,12 +44,6 @@ public class DrawBridgeController : MonoBehaviour
         }
 
         transform.rotation = targetRot;
-        isOpening = false;
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        transform.rotation = Quaternion.Euler(closedRotation);   
+        rotateRoutine = null;
     }
 }

@@ -21,6 +21,7 @@ public class playerController : MonoBehaviour, IDamage
     public int shootDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
+    [SerializeField] float emptyCooldownTime = 2f;
     public float damageReductionMultiplier = 1f;
 
     [SerializeField] Transform handPoint;
@@ -38,6 +39,7 @@ public class playerController : MonoBehaviour, IDamage
     public int speedOrig;
 
     float shootTimer;
+    float emptyCooldown = 0f;
     float _vignetteIntensity;
 
     Vignette _vignette;
@@ -48,7 +50,6 @@ public class playerController : MonoBehaviour, IDamage
     List<SpellStats> spellList = new List<SpellStats>();
     List<GameObject> staffObjects = new List<GameObject>();
     int spellListPos = 0;
-
 
     void Start()
     {
@@ -102,6 +103,9 @@ public class playerController : MonoBehaviour, IDamage
 
         shootTimer += Time.deltaTime;
 
+        if (emptyCooldown > 0f)
+            emptyCooldown -= Time.deltaTime;
+
         if (controller.isGrounded)
         {
             jumpCount = 0;
@@ -118,8 +122,20 @@ public class playerController : MonoBehaviour, IDamage
         if (spellList.Count > 0)
         {
             float currentRate = spellList[spellListPos].castRate;
+
             if (Input.GetButton("Fire1") && shootTimer >= currentRate)
-                shoot();
+            {
+                if (_increaseRound != null && !_increaseRound.CanShoot)
+                {
+                    // out of magic — lock shooting
+                    emptyCooldown = emptyCooldownTime;
+                    shootTimer = 0;
+                }
+                else if (emptyCooldown <= 0f)
+                {
+                    shoot();
+                }
+            }
         }
 
         selectStaff();
@@ -146,8 +162,11 @@ public class playerController : MonoBehaviour, IDamage
 
     void shoot()
     {
-        if (_increaseRound != null && !_increaseRound.CanShoot) return;
         if (_increaseRound != null) _increaseRound.UseMagic();
+
+        // if magic just ran out start cooldown
+        if (_increaseRound != null && !_increaseRound.CanShoot)
+            emptyCooldown = emptyCooldownTime;
 
         shootTimer = 0;
 
@@ -157,9 +176,8 @@ public class playerController : MonoBehaviour, IDamage
         {
             case SpellType.Fire:
             case SpellType.Ice:
-                Vector3 spawnPos = handPoint.position;
+                Vector3 spawnPos = handPoint.position + Vector3.up * 1.1f;
                 Vector3 targetPoint = spawnPos + Camera.main.transform.forward * current.castDist;
-
                 GameObject proj = Instantiate(current.projectilePrefab, spawnPos, Quaternion.identity);
                 SpellProjectile sp = proj.GetComponent<SpellProjectile>();
                 if (sp != null)

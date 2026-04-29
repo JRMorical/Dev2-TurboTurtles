@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DestructibleWall
   maxHealth: 25
-  debrisEffect: {fileID: 0}
+  debrisEffect: {fileID: 6774947770243889864, guid: ec790f912baad554a9dd57e0b39c9b4f, type: 3}
 --- !u!33 &7697150955653974389
 MeshFilter:
   m_ObjectHideFlags: 0

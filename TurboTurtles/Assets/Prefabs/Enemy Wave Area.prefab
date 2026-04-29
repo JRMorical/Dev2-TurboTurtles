@@ -55,12 +55,18 @@ MonoBehaviour:
   - enemyPrefab: {fileID: 8752032220630977854, guid: d71c2a5b6d890604da4c9d33dec593e3, type: 3}
     startingAmount: 0
     increasePerWave: 2
+  enemyTags:
+  - Caster
+  - Melee
+  - Ranged
+  - Spawner
   timeBetweenSpawns: 0.5
   timeBetweenWaves: 5
   startDelay: 3
   maxWaves: 2
   respawnPoint: {fileID: 0}
-  bridgeToLower: {fileID: 0}
+  bridgeToOpen: {fileID: 0}
+  bridgeToClose: {fileID: 0}
   completeDelay: 3
   nextArea: {fileID: 0}
   startOnTrigger: 0

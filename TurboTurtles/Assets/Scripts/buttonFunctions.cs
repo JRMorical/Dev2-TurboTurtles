@@ -14,6 +14,11 @@ public class buttonFunctions : MonoBehaviour
         gamemanager.instance.stateUnpause();
     }
 
+    public void respawn()
+    {
+        gamemanager.instance.RespawnAtCheckpoint();
+    }
+
     public void quit()
     {
 #if UNITY_EDITOR
