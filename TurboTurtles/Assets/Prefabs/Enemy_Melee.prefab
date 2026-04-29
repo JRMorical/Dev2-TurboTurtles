@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 252581986932074220}
   - component: {fileID: 7621560307552571020}
   - component: {fileID: 334542095526577917}
+  - component: {fileID: 5277561861855618873}
   - component: {fileID: 3352423553332322055}
   - component: {fileID: 1855763373655437855}
   - component: {fileID: 6803580920299814561}
@@ -93,6 +94,23 @@ MonoBehaviour:
   damage: 2
   attackCooldown: 2
   attackRange: 2
+--- !u!114 &5277561861855618873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677352975361625395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f5e69b144e476d4b8539c809ec337d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathDropSpawner
+  possibleDrops:
+  - dropPrefab: {fileID: 4856495343137763813, guid: ebea5a44ebc5f644c9cd5611e2e51a94, type: 3}
+    dropChance: 1
+  dropSpawnPoint: {fileID: 0}
+  useRandomDrop: 1
 --- !u!33 &3352423553332322055
 MeshFilter:
   m_ObjectHideFlags: 0

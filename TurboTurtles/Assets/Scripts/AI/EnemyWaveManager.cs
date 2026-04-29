@@ -17,6 +17,7 @@ public class EnemyWaveManager : MonoBehaviour
 
     [Header("Enemies")]
     [SerializeField] List<EnemySpawnEntry> enemyTypes = new List<EnemySpawnEntry>();
+    string[] enemyTags = { "Caster", "Melee", "Ranged", "Spawner" };
 
     [Header("Wave Settings")]
     [SerializeField] float timeBetweenSpawns = 0.5f;
@@ -86,7 +87,7 @@ public class EnemyWaveManager : MonoBehaviour
 
             yield return StartCoroutine(SpawnWave());
 
-            yield return new WaitUntil(() => CountLivingSpawnedEnemies() <= 0);
+            yield return new WaitUntil(() => CountLivingEnemiesByTag() <= 0);
 
             if (currentWave < maxWaves)
                 yield return StartCoroutine(CountdownRoutine(timeBetweenWaves));
@@ -174,6 +175,18 @@ public class EnemyWaveManager : MonoBehaviour
         return livingCount;
     }
 
+    int CountLivingEnemiesByTag()
+    {
+        int count = 0;
+
+        foreach (string tag in enemyTags)
+        {
+            count += GameObject.FindGameObjectsWithTag(tag).Length;
+        }
+
+        return count;
+    }
+
     void UpdateWaveUI()
     {
         if (gamemanager.instance == null) return;
@@ -198,11 +211,20 @@ public class EnemyWaveManager : MonoBehaviour
             waveRoutine = null;
         }
 
-        foreach (GameObject enemy in spawnedEnemies)
+        DeathDropSpawner.suppressDrops = true;
+
+        foreach (string tag in enemyTags)
         {
-            if (enemy != null)
-                Destroy(enemy);
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag(tag);
+
+            foreach (GameObject enemy in enemies)
+            {
+                if (enemy != null)
+                    Destroy(enemy);
+            }
         }
+
+        DeathDropSpawner.suppressDrops = false;
 
         spawnedEnemies.Clear();
 
