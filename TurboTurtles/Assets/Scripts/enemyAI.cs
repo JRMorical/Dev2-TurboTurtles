@@ -24,7 +24,6 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Renderer model;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] MonoBehaviour enemyBehavior;
-    [SerializeField] GameObject dropPickup;
     [Range(0f, 1f)][SerializeField] float dropRate = 0.2f;
     [Range(0.2f, 1f)][SerializeField] float enemyLinkJumpSpeed = 0.6f;
     bool isTravesingOffMeshLink;
@@ -69,7 +68,6 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         if (model == null) Debug.Log("RENDERER IS NULL");
         if (agent == null) Debug.Log("NAV MESH AGENT IS NULL");
-        if (dropPickup == null) Debug.Log("DROP PICKUP OBJECT IS NULL");
 
         colorOrig = model.material.color;
         gamemanager.instance.updateGameGoal(1);
@@ -113,10 +111,6 @@ public class enemyAI : MonoBehaviour, IDamage
     void HandleDeath()
     {
         Destroy(gameObject);
-        if(Random.Range(0f, 1f) <= dropRate)
-        {
-            Instantiate(dropPickup, transform.position, Quaternion.identity);
-        }
     }
     public void Chase(Vector3 _target)
     {
