@@ -17,7 +17,7 @@ public class EnemyWaveManager : MonoBehaviour
 
     [Header("Enemies")]
     [SerializeField] List<EnemySpawnEntry> enemyTypes = new List<EnemySpawnEntry>();
-    string[] enemyTags = { "Caster", "Melee", "Ranged", "Spawner" };
+    string[] enemyTags = { "Caster", "Melee", "Ranged", "Spawner", "Charger" };
 
     [Header("Wave Settings")]
     [SerializeField] float timeBetweenSpawns = 0.5f;

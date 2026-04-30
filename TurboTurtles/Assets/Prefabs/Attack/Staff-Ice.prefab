@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 8216784397772661233}
   - component: {fileID: 8832182130042987456}
   - component: {fileID: 8756700105368113969}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Staff-Ice
   m_TagString: Untagged
   m_Icon: {fileID: 0}

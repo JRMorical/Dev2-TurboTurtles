@@ -18,15 +18,18 @@ public class DamageBoostSkill : BaseSkill
         Debug.Log("Damage Boost Activated");
 
         isActive = true; 
-
+        
         StartCoroutine(CooldownEffect());
 
-        gamemanager.instance.player.GetComponent<playerController>().shootDamage += boostAmount;
+        playerController pc = gamemanager.instance.player.GetComponent<playerController>();
+        if (pc != null)
+        {
+            pc.shootDamage += boostAmount;
 
-        yield return new WaitForSeconds(duration);
-
-        gamemanager.instance.player.GetComponent<playerController>().shootDamage -= boostAmount;
-
+            yield return new WaitForSeconds(duration);
+            pc.shootDamage -= boostAmount;
+        }
+        
         isActive = false; 
     }
 }

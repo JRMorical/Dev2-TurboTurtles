@@ -24,7 +24,6 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] Renderer model;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] MonoBehaviour enemyBehavior;
-    [Range(0f, 1f)][SerializeField] float dropRate = 0.2f;
     [Range(0.2f, 1f)][SerializeField] float enemyLinkJumpSpeed = 0.6f;
     bool isTravesingOffMeshLink;
     IEnemyBehaviour behavior;
@@ -153,7 +152,7 @@ public class enemyAI : MonoBehaviour, IDamage
     public void takeDamage(int amount)
     {
         HP -= amount;
-        
+        HitFeedback.instance.ShowHit();
         if (HP <= 0)
         {          
             if (spawner != null)
