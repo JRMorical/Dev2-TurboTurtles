@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 4769140177519917112}
   - component: {fileID: 3741464758749646104}
   - component: {fileID: 2882681684618491440}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Staff-Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}

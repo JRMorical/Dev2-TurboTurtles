@@ -23,7 +23,9 @@ public class PortalLifetime : MonoBehaviour
             if (pc == null) return;
             if(!playerInside)
             {
+                Debug.Log("Player  inside" + gameObject + pc);
                 pc.speed /= 2;
+                Debug.Log("Player speed" + pc.speed);
                 playerInside = true;
             }
         }
@@ -42,6 +44,7 @@ public class PortalLifetime : MonoBehaviour
     {
         if(pc != null && playerInside)
         {
+            Debug.Log("Player inside & PC not null");
             pc.speed = playerOrigSpeed;
         }
 

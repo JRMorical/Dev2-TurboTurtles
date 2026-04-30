@@ -9,6 +9,7 @@ TagManager:
   - Melee
   - Caster
   - Charger
+  - Ceiling
   layers:
   - Default
   - TransparentFX
@@ -25,10 +26,10 @@ TagManager:
   - Caster
   - Charger
   - Ground
-  - 
-  - 
-  - 
-  - 
+  - Ceiling
+  - Staff-Ice
+  - Staff-Fire
+  - Staff-Lightning
   - 
   - 
   - 

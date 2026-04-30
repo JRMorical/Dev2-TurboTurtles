@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2816949456694215154}
   - component: {fileID: 7317622921994568708}
   - component: {fileID: 7544797802699321301}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Staff-Shock
   m_TagString: Untagged
   m_Icon: {fileID: 0}

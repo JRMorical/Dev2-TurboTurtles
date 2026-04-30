@@ -44,7 +44,7 @@ public class enemyCaster : MonoBehaviour, IEnemyBehaviour
     void CastBlizzard(enemyAI _ai)
     {
         Vector3 location = gamemanager.instance.player.transform.position;
-        location += Vector3.up * 15f;
+        location += Vector3.up * 8f;
         StartCoroutine(BlizzardDelay(location));
     }
     void HandleSpawns()

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3488246013339301165}
   - component: {fileID: 498775301165058054}
-  - component: {fileID: 2150920489565421505}
   - component: {fileID: 7973315667616375600}
   - component: {fileID: 2524963008965558829}
   - component: {fileID: 5573500045946481531}
@@ -51,23 +50,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DestructibleWall
   maxHealth: 10
   debrisEffect: {fileID: 6774947770243889864, guid: ec790f912baad554a9dd57e0b39c9b4f, type: 3}
---- !u!114 &2150920489565421505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4870896253690492304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f5e69b144e476d4b8539c809ec337d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathDropSpawner
-  possibleDrops:
-  - dropPrefab: {fileID: 4856495343137763813, guid: ebea5a44ebc5f644c9cd5611e2e51a94, type: 3}
-    dropChance: 1
-  dropSpawnPoint: {fileID: 0}
-  useRandomDrop: 1
 --- !u!114 &7973315667616375600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3676,8 +3658,8 @@ MonoBehaviour:
   - {x: 0.0000038444996, y: 0.0000076293945}
   - {x: 1.0000038, y: 1.0000076}
   - {x: 0.0000038444996, y: 1.0000076}
-  - {x: 1.000005, y: 0.0000023841858}
-  - {x: -0.0000053346157, y: 0.0000023841858}
+  - {x: 1.0000051, y: 0.0000023841858}
+  - {x: -0.000005275011, y: 0.0000023841858}
   - {x: 1.0000052, y: 1.0000024}
   - {x: -0.000005275011, y: 1.0000024}
   - {x: 1.0000076, y: 0.0000023841858}
@@ -3964,8 +3946,8 @@ MonoBehaviour:
   - {x: 0.0000038444996, y: -0.0000076293945}
   - {x: 1.0000038, y: 0.9999924}
   - {x: 0.0000038444996, y: 0.9999924}
-  - {x: 1.000005, y: 0.0000023841858}
-  - {x: -0.0000053346157, y: 0.0000023841858}
+  - {x: 1.0000051, y: 0.0000023841858}
+  - {x: -0.000005275011, y: 0.0000023841858}
   - {x: 1.0000052, y: 1.0000024}
   - {x: -0.000005275011, y: 1.0000024}
   - {x: 0.9999924, y: 0.0000023841858}
