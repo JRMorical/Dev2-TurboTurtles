@@ -24,10 +24,10 @@ public class DamageBoostSkill : BaseSkill
         playerController pc = gamemanager.instance.player.GetComponent<playerController>();
         if (pc != null)
         {
-            pc.shootDamage += boostAmount;
+            pc.bonusDamage += boostAmount;
 
             yield return new WaitForSeconds(duration);
-            pc.shootDamage -= boostAmount;
+            pc.bonusDamage -= boostAmount;
         }
         
         isActive = false; 

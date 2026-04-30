@@ -29,6 +29,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
+      propertyPath: HP
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4901524112608852630, guid: cae03782b8988d141962f09292198154, type: 3}
       propertyPath: role
       value: 2
       objectReference: {fileID: 0}
@@ -109,8 +113,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemyCaster
   AOE_portal: {fileID: -1725792265227528554, guid: 263d6b8b279c10f41b2895f9a0435f55, type: 3}
+  blizzardPrefab: {fileID: -7701928646926280168, guid: d7ca4d6b991b17049bb29b946a770ff6, type: 3}
   portalCooldown: 5
   stoppingDistance: 15
-  blizzardPrefab: {fileID: -7701928646926280168, guid: d7ca4d6b991b17049bb29b946a770ff6, type: 3}
   maxSpawned: 1
   abilityCooldown: 3

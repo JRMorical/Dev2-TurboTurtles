@@ -12,13 +12,16 @@ public class playerController : MonoBehaviour, IDamage
 
     public int HP;
     public int speed;
+    [SerializeField] float currentMoveSpeed;
+    public float speedMultiplier = 1f;
     public int jumpMax;
 
     [Range(2, 5)][SerializeField] int sprintMod;
     [Range(5, 25)][SerializeField] int jumpSpeed;
     [Range(15, 50)][SerializeField] int gravity;
 
-    public int shootDamage;
+    public int bonusDamage = 0;
+    [SerializeField] int spellDamage;
     [SerializeField] int shootDist;
     [SerializeField] float shootRate;
     [SerializeField] float emptyCooldownTime = 2f;
@@ -56,7 +59,7 @@ public class playerController : MonoBehaviour, IDamage
         HPOrig = HP;
         updatePlayerUI();
         speedOrig = speed;
-
+        
         if (postProcessVolume != null)
             postProcessVolume.profile.TryGet(out _vignette);
     }
@@ -66,6 +69,8 @@ public class playerController : MonoBehaviour, IDamage
         movement();
         sprint();
         updateVignette();
+        UpdateFinalDamage();
+        CurrentSpeed();
     }
 
     void updateVignette()
@@ -113,7 +118,7 @@ public class playerController : MonoBehaviour, IDamage
         }
 
         moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-        controller.Move(moveDir * speed * Time.deltaTime);
+        controller.Move(moveDir * speed * speedMultiplier * Time.deltaTime);
 
         jump();
         controller.Move(playerVel * Time.deltaTime);
@@ -143,12 +148,20 @@ public class playerController : MonoBehaviour, IDamage
 
     void sprint()
     {
-        if (_increaseRound == null) return;
+        //if (_increaseRound == null) return;
 
+        //if (_increaseRound.IsSprinting)
+        //    speed = speedOrig * sprintMod;
+        //else
+        //    speed = speedOrig;
         if (_increaseRound.IsSprinting)
-            speed = speedOrig * sprintMod;
+        {
+            speedMultiplier = sprintMod;
+        }
         else
-            speed = speedOrig;
+        {
+            speedMultiplier = 1f;
+        }
     }
 
     void jump()
@@ -171,7 +184,7 @@ public class playerController : MonoBehaviour, IDamage
         shootTimer = 0;
 
         SpellStats current = spellList[spellListPos];
-
+        int finalDamage = current.damage + bonusDamage; 
         switch (current.spellType)
         {
             case SpellType.Fire:
@@ -181,7 +194,7 @@ public class playerController : MonoBehaviour, IDamage
                 GameObject proj = Instantiate(current.projectilePrefab, spawnPos, Quaternion.identity);
                 SpellProjectile sp = proj.GetComponent<SpellProjectile>();
                 if (sp != null)
-                    sp.Init(targetPoint, current.damage, current.projectileSpeed, current.slowAmount, current.slowDuration);
+                    sp.Init(targetPoint, finalDamage, current.projectileSpeed, current.slowAmount, current.slowDuration); 
                 break;
 
             case SpellType.Shock:
@@ -218,7 +231,22 @@ public class playerController : MonoBehaviour, IDamage
                 staffObjects[i].SetActive(i == spellListPos);
         }
     }
-
+    void UpdateFinalDamage()
+    {
+        if (spellList.Count > 0)
+        {
+            SpellStats current = spellList[spellListPos];
+            spellDamage = current.damage + bonusDamage;
+        }
+        else
+        {
+            spellDamage = bonusDamage;
+        }
+    }
+    void CurrentSpeed()
+    {
+        currentMoveSpeed = speed * speedMultiplier;
+    }
     void selectStaff()
     {
         if (spellList.Count <= 1) return;
